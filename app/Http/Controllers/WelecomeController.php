@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 class WelecomeController extends Controller
 {
     //首页
-    public function index()
+    public function index(Request $request)
     {
+//        Common::recordAdminUserLog('2','张三','首页','登陆首页');
+//        exit;
 //        Auth::logout();
 //        var_dump(Auth::check());
 //        dd(Auth::user());
