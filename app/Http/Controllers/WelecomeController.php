@@ -17,6 +17,8 @@ class WelecomeController extends Controller
 //        Auth::logout();
 //        var_dump(Auth::check());
 //        dd(Auth::user());
+//        Common::recordAdminUserLog('2','张三','首页','登陆首页');
+
         return view('welcome');
     }
 

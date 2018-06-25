@@ -73,7 +73,11 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
 
 
     //会员管理
-
+    Route::any('member','MemberController@member')->name('member');
+    Route::any('memberAdd','MemberController@memberAdd')->name('memberAdd');
+    Route::post('memberDel','MemberController@memberDel')->name('memberDel');
+    Route::post('memberStatus','MemberController@memberStatus')->name('memberStatus');
+    Route::post('changePassword','MemberController@changePassword')->name('changePassword');
 
     //产品管理
 

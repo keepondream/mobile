@@ -97,7 +97,7 @@ class HomeController extends Controller
                 'icon' => '&#xe60d;',
                 'parent_id' => '0',
                 'list' => [
-                    ['name'=>'会员列表','url'=>''],
+                    ['name'=>'会员列表','url'=>'member'],
                     ['name'=>'删除的会员','url'=>''],
                     ['name'=>'等级管理','url'=>''],
                     ['name'=>'积分管理','url'=>''],

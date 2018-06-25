@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->default('')->commit('邮箱');
             $table->string('password')->commit('密码');
             $table->tinyInteger('sex')->default('2')->commit('性别: 默认为女  1: 男 3: 保密');
+            $table->tinyInteger('status')->default('1')->commit('状态: 默认为启用  0: 禁用');
             $table->string('mobile')->default('')->commit('手机号');
             $table->string('datetimepicker')->default('')->commit('出生日期');
             $table->string('area')->default('')->commit('省份区域');
