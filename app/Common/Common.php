@@ -233,22 +233,6 @@ class Common
         return json_decode($data,$assoc=true);
     }
 
-    //获取用户浏览器类型
-    public static function getBrowser(){
-        $agent=$_SERVER["HTTP_USER_AGENT"];
-        if(strpos($agent,'MSIE')!==false || strpos($agent,'rv:11.0')) //ie11判断
-            return "ie";
-        else if(strpos($agent,'Firefox')!==false)
-            return "firefox";
-        else if(strpos($agent,'Chrome')!==false)
-            return "chrome";
-        else if(strpos($agent,'Opera')!==false)
-            return 'opera';
-        else if((strpos($agent,'Chrome')==false)&&strpos($agent,'Safari')!==false)
-            return 'safari';
-        else
-            return 'unknown';
-    }
 
     /**
      * 判断用户是手机访问还是pc访问

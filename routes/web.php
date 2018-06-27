@@ -25,6 +25,8 @@ Route::get('/home', 'HomeController@product')->name('product');
 
 
 
+
+
 //后台路由 中间件检测
 Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     //辅助数据填充
@@ -78,6 +80,8 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     Route::post('memberDel','MemberController@memberDel')->name('memberDel');
     Route::post('memberStatus','MemberController@memberStatus')->name('memberStatus');
     Route::post('changePassword','MemberController@changePassword')->name('changePassword');
+    //城市选择
+    Route::post('citySelect','MemberController@citySelect')->name('citySelect');
 
     //产品管理
 

@@ -22,9 +22,11 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('status')->default('1')->commit('状态: 默认为启用  0: 禁用');
             $table->string('mobile')->default('')->commit('手机号');
             $table->string('datetimepicker')->default('')->commit('出生日期');
-            $table->string('area')->default('')->commit('省份区域');
-            $table->string('city')->default('')->commit('城市');
+            $table->unsignedInteger('area')->default('0')->commit('省份');
+            $table->unsignedInteger('city')->default('0')->commit('城市');
+            $table->unsignedInteger('county')->default('0')->commit('区县');
             $table->string('desc')->default('')->commit('个人描述');
+            $table->string('avatar')->default('')->commit('头像地址');
             $table->rememberToken();
             $table->timestamps();
         });
