@@ -62,7 +62,7 @@
                 <label class="form-label col-xs-4 col-sm-3">备注：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <textarea id="desc" name="desc" cols="5" rows="5" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="Huitextarealength(this,100)" style="margin-top: 25px;">{{!empty($adminUser->desc) ? $adminUser->desc : ''}}</textarea>
-                    <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+                    <p class="textarea-numberbar"><em class="textarea-length">{{!empty($adminUser->desc) ? strlen($adminUser->desc) : '0'}}</em>/100</p>
                 </div>
             </div>
             <div class="row cl">

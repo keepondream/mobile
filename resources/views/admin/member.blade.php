@@ -10,7 +10,7 @@
             <input type="text" class="input-text" style="width:250px" placeholder="输入会员名称、电话、邮箱" id="" name="">
             <button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
         </div>
-        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="member_add('添加用户','{{route('memberAdd')}}','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a></span> <span class="r">共有数据：<strong>{{count($members)}}</strong> 条</span> </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="member_add('添加用户','{{route('memberAdd')}}','','610')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a></span> <span class="r">共有数据：<strong>{{count($members)}}</strong> 条</span> </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-hover table-bg table-sort">
                 <thead>
@@ -33,18 +33,18 @@
                         <tr class="text-c">
                             <td><input type="checkbox" value="{{$user->id}}" name="id"></td>
                             <td>{{$user->id}}</td>
-                            <td><u style="cursor:pointer" class="text-primary" onclick="member_show('{{$user->name}}','member-show.html','{{$user->id}}','360','400')">张三</u></td>
+                            <td><u style="cursor:pointer" class="text-primary" onclick="member_show('{{$user->name}}','member-show.html','{{$user->id}}','360','400')">{{$user->name}}</u></td>
                             <td>{{($user->sex) == 1 ? '男' : (($user->sex) == 2 ? '女': '保密')}}</td>
                             <td>{{$user->mobile}}</td>
                             <td>{{$user->email}}</td>
-                            <td class="text-l">{{$user->area}} {{$user->city}}</td>
+                            <td class="text-l">{{!empty($user->hasOneArea->name) ? $user->hasOneArea->name : ''}}{{!empty($user->hasOneCity->name) ? '-'.$user->hasOneCity->name : ''}}{{!empty($user->hasOneCounty->name) ? '-'.$user->hasOneCounty->name : ''}}</td>
                             <td>{{$user->created_at}}</td>
                             @if($user->status == 1)
                                 <td class="td-status"><span class="label label-success radius">已启用</span></td>
-                                <td class="td-manage"><a style="text-decoration:none" onClick="member_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="member_edit('编辑','member-add.html','4','','510')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="change_password('修改密码','{{route('changePassword',['id'=>$user->id])}}','{{$user->id}}','600','270')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> <a title="删除" href="javascript:;" onclick="member_del(this,'{{$user->id}}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                                <td class="td-manage"><a style="text-decoration:none" onClick="member_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="member_edit('编辑','{{route('memberAdd',['id'=>$user->id])}}','4','','610')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="change_password('修改密码','{{route('changePassword',['id'=>$user->id])}}','{{$user->id}}','600','270')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> <a title="删除" href="javascript:;" onclick="member_del(this,'{{$user->id}}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
                             @else
                                 <td class="td-status"><span class="label radius">已停用</span></td>
-                                <td class="td-manage"><a style="text-decoration:none" onClick="member_start(this,'10001')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="member_edit('编辑','member-add.html','4','','510')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="change_password('修改密码','{{route('changePassword',['id'=>$user->id])}}','{{$user->id}}','600','270')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> <a title="删除" href="javascript:;" onclick="member_del(this,'{{$user->id}}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                                <td class="td-manage"><a style="text-decoration:none" onClick="member_start(this,'10001')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="member_edit('编辑','{{route('memberAdd',['id'=>$user->id])}}','4','','610')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="change_password('修改密码','{{route('changePassword',['id'=>$user->id])}}','{{$user->id}}','600','270')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> <a title="删除" href="javascript:;" onclick="member_del(this,'{{$user->id}}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
                             @endif
                         </tr>
                     @endforeach

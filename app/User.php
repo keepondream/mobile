@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','sex','mobile','datetimepicker','area','city','desc'
+        'name', 'email', 'password','sex','mobile','datetimepicker','area','city','desc','avatar','county'
     ];
 
     /**
@@ -26,4 +26,26 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * 获取省
+     */
+    public function hasOneArea()
+    {
+        return $this->hasOne('App\http\Model\Region','code','area');
+    }
+    /**
+     * 获取市
+     */
+    public function hasOneCity()
+    {
+        return $this->hasOne('App\http\Model\Region','code','city');
+    }
+    /**
+     * 获取区县
+     */
+    public function hasOneCounty()
+    {
+        return $this->hasOne('App\http\Model\Region','code','county');
+    }
 }
