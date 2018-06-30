@@ -161,12 +161,15 @@ class HomeController extends Controller
         } else {
             $outData[] = '菜单表有数据不能初始化!~';
         }
+        $adminAccessAuth = [];
         //初始化权限
         if (empty(Access::all()->toArray())) {
             $res = array_merge(Common::menuAuth(),Common::actionAuth());
 
 
             foreach ($res as $k => $v) {
+                $tempAccessId = $k + 1;
+                array_push($adminAccessAuth,$tempAccessId);
                 if (Access::create($v)) {
                     $outData[] = $v['title'].' - 初始化成功!~';
                 } else {
@@ -176,23 +179,29 @@ class HomeController extends Controller
         } else {
             $outData[] = '权限表有数据不能初始化!~';
         }
+        $admin2num = floor(count($adminAccessAuth) / 3 * 2);
+        $admin3num = ceil(count($adminAccessAuth) / 3);
+        shuffle($adminAccessAuth);
+        $admin2 = array_slice($adminAccessAuth,0,$admin2num);
+        shuffle($adminAccessAuth);
+        $admin3 = array_slice($adminAccessAuth,0,$admin3num);
         //初始化角色
         if (empty(Role::all()->toArray())) {
             $res = [
                 [
                     'name' => '超级管理员',
                     'desc' => '拥有至高无上的权限',
-                    'accesses' => [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
+                    'accesses' => $adminAccessAuth
                 ],
                 [
                     'name' => '总管理员',
                     'desc' => '拥有一人之下万人之上的权限',
-                    'accesses' => [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+                    'accesses' => $admin2,
                 ],
                 [
                     'name' => '普通管理员',
                     'desc' => '拥有会员,产品,订单,日志所有功能权限',
-                    'accesses' => [17,18,19,20,21,22,23,24,25,26]
+                    'accesses' => $admin3
                 ]
             ];
             foreach ($res as $role) {

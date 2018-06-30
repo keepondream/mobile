@@ -32,6 +32,9 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     //辅助数据填充
     Route::get('assistInitOnlyOwn','HomeController@assist');
 
+    //操作权限验证
+    Route::post('checkAuth','HomeController@checkAuth')->name('checkAuth');
+
     //登录
     Route::get('login','LoginController@index');
     Route::post('login','LoginController@login')->name('adminlogin');
@@ -43,8 +46,7 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     //我的桌面
     Route::get('welcome','HomeController@welcome')->name('Awelcome');
 
-    //操作权限验证
-    Route::post('checkAuth','HomeController@checkAuth')->name('checkAuth');
+
 
     //系统管理
     Route::get('set','SiteController@set')->name('set');
@@ -79,7 +81,7 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     Route::any('memberAdd','MemberController@memberAdd')->name('memberAdd');
     Route::post('memberDel','MemberController@memberDel')->name('memberDel');
     Route::post('memberStatus','MemberController@memberStatus')->name('memberStatus');
-    Route::post('changePassword','MemberController@changePassword')->name('changePassword');
+    Route::any('changePassword','MemberController@changePassword')->name('changePassword');
     //城市选择
     Route::post('citySelect','MemberController@citySelect')->name('citySelect');
 

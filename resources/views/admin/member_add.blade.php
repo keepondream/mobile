@@ -11,6 +11,14 @@
                     <input type="text" class="input-text" value="{{!empty($user->name) ? $user->name : ''}}" placeholder="请输入用户名" id="name" name="name">
                 </div>
             </div>
+            @if(empty($user->id))
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="password" class="input-text" autocomplete="off" value="" placeholder="请输入新密码" id="password" name="password">
+                </div>
+            </div>
+            @endif
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
                 <div class="formControls col-xs-8 col-sm-9 skin-minimal">
@@ -28,7 +36,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
                 <div class="formControls col-xs-8 col-sm-9">

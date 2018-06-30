@@ -183,6 +183,9 @@
         }
         /*批量删除*/
         function datadel() {
+            if (checkAuth('managerDel') == 0) {
+                return false;
+            };
             var ids = [];
             $('input[name="id"]:checked').each(function (j) {
                 if (j >= 0) {

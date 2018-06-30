@@ -73,6 +73,7 @@ class Common
             ['title' => '添加会员','url' => 'memberAdd'],
             ['title' => '删除会员','url' => 'memberDel'],
             ['title' => '审核会员','url' => 'memberAudit'],
+            ['title' => '修改会员密码','url' => 'memberChangePassword'],
             ['title' => '已删会员列表','url' => 'delMember'],
             ['title' => '永久清除会员','url' => 'delMemberClean'],
             ['title' => '找回已删会员','url' => 'delMemberBack'],
