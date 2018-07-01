@@ -34,7 +34,7 @@
                                     @if(isset($v['list']) && !empty($v['list']))
                                         @foreach($v['list'] as $k1 => $v1)
                                                 @if(!empty($data) && ($v1['id'] == $data['parent_id']))
-                                                    <option value="{{$v1['id']}}" selected="selected">{{$v['name']}}</option>
+                                                    <option value="{{$v1['id']}}" selected="selected">{{$v1['name']}}</option>
                                                 @else
                                                     <option value="{{$v1['id']}}" disabled>&nbsp;&nbsp;├ {{$v1['name']}}</option>
                                                 @endif

@@ -10,7 +10,9 @@ namespace App\Common;
 
 
 use App\http\Model\AdminUserLog;
+use App\http\Model\Category;
 use App\http\Model\Menu;
+use App\http\Model\Region;
 use App\http\Model\RoleAccess;
 use Illuminate\Http\Request;
 
@@ -81,6 +83,17 @@ class Common
             ['title' => '等级操作','url' => 'rankAction'],
             ['title' => '积分管理','url' => 'creditCheck'],
             ['title' => '积分操作','url' => 'rankAction'],
+            # 产品管理
+            ['title' => '分类管理','url' => 'category'],
+            ['title' => '添加分类','url' => 'categoryAdd'],
+            ['title' => '删除分类','url' => 'categoryDel'],
+            ['title' => '平台管理','url' => 'paas'],
+            ['title' => '添加平台','url' => 'paasAdd'],
+            ['title' => '删除平台','url' => 'paasDel'],
+            ['title' => '审核平台','url' => 'paasAudit'],
+
+
+
         ];
         if (!empty($actionUrl)) {
             //获取当前用户的所有权限
@@ -145,14 +158,22 @@ class Common
      * @param int $parentId
      * @return array
      */
-    public static function tree($parentId = 0)
+    public static function tree($parentId = 0,$status=null)
     {
-        $rows = Menu::where('parent_id', $parentId)->orderBy('sort','asc')->get()->toArray();
+        if (!empty($status)) {
+            $rows = Category::where('parent_id', $parentId)->orderBy('sort','asc')->get()->toArray();
+        } else {
+            $rows = Menu::where('parent_id', $parentId)->orderBy('sort','asc')->get()->toArray();
+        }
         $arr = array();
 
         if (sizeof($rows) != 0){
             foreach ($rows as $key => $val){
-                $val['list'] = self::tree($val['id']);
+                if (!empty($status)) {
+                    $val['list'] = self::tree($val['id'],1);
+                } else {
+                    $val['list'] = self::tree($val['id']);
+                }
                 $arr[] = $val;
             }
             return $arr;

@@ -1,6 +1,6 @@
 <?php
-
 /*
+ *
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -75,17 +75,24 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     Route::post('managerDel','MangerController@managerDel')->name('managerDel');
     Route::post('managerStatus','MangerController@managerStatus')->name('managerStatus');
 
-
     //会员管理
     Route::any('member','MemberController@member')->name('member');
     Route::any('memberAdd','MemberController@memberAdd')->name('memberAdd');
     Route::post('memberDel','MemberController@memberDel')->name('memberDel');
     Route::post('memberStatus','MemberController@memberStatus')->name('memberStatus');
     Route::any('changePassword','MemberController@changePassword')->name('changePassword');
+
     //城市选择
     Route::post('citySelect','MemberController@citySelect')->name('citySelect');
 
     //产品管理
+    Route::any('product','ProductController@category')->name('category');
+    Route::any('productCategoryAdd','ProductController@categoryAdd')->name('categoryAdd');
+    Route::post('productCategoryDel','ProductController@categoryDel')->name('categoryDel');
+    Route::any('paas','ProductController@paas')->name('paas');
+    Route::any('paasAdd','ProductController@paasAdd')->name('paasAdd');
+    Route::post('paasDel','ProductController@paasDel')->name('paasDel');
+
 
 
     //订单管理

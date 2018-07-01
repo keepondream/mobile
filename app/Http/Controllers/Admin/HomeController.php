@@ -110,9 +110,9 @@ class HomeController extends Controller
                 'icon' => '&#xe620;',
                 'parent_id' => '0',
                 'list' => [
-                    ['name'=>'品牌管理','url'=>''],
-                    ['name'=>'分类管理','url'=>''],
-                    ['name'=>'产品列表','url'=>''],
+                    ['name'=>'分类管理','url'=>'category'],
+                    ['name'=>'平台管理','url'=>'paas'],
+                    ['name'=>'产品列表','url'=>'product'],
                 ],
             ];
             $res[] = [

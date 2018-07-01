@@ -19,6 +19,7 @@
     <link href="{{ asset('static/h-ui.admin/css/style.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset('lib/Hui-iconfont/1.0.8/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('static/h-ui.admin/skin/default/skin.css') }}" id="skin" />
+    @yield('css')
     <!--[if IE 6]>
     <script type="text/javascript" src="{{ asset('lib/DD_belatedPNG_0.0.8a-min.js') }}"></script>
     <script>DD_belatedPNG.fix('*');</script>

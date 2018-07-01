@@ -15,7 +15,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="password2" class="input-text" autocomplete="off" value="" placeholder="请输入确认密码" id="password2" name="password2">
+                    <input type="password" class="input-text" autocomplete="off" value="" placeholder="请输入确认密码" id="password2" name="password2">
                 </div>
             </div>
 
