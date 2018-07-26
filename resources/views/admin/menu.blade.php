@@ -90,11 +90,11 @@
     <script type="text/javascript">
         var _token = $("meta[name='csrf-token']").attr('content');
         $('.table-sort').dataTable({
-            "aaSorting": [[ 0, "asc" ]],//默认第几个排序
+            "aaSorting": [[ 1, "asc" ]],//默认第几个排序
             "bStateSave": false,//状态保存
             "aoColumnDefs": [
                 // {"bVisible": false, "aTargets": [ 1 ]}, //控制列的隐藏显示
-                {"orderable":false,"aTargets":[0,4]}// 制定列不参与排序
+                {"orderable":false,"aTargets":[0,3,4]}// 制定列不参与排序
             ]
         });
         /*系统-栏目-添加*/

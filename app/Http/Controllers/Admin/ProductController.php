@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Common\Common;
+use App\http\Model\Brand;
 use App\http\Model\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -111,7 +112,11 @@ class ProductController extends Controller
      */
     public function paas(Request $request)
     {
-        return view('admin/paas');
+        //获取所有的分类
+        $data['category'] = Category::all();
+        //获取所有的平台
+        $data['brands'] = Brand::all();
+        return view('admin/paas',$data);
     }
 
     /**
@@ -120,7 +125,20 @@ class ProductController extends Controller
      */
     public function paasAdd(Request $request)
     {
+        $param = Common::dataCheck($request->input());
+        $brand = Brand::where('name',$param['name'])->get()->toArray();
+        $msg = Common::jsonOutData(201,'添加失败!~');
+        if ($request->isMethod('post')) {
+            if (!empty($brand)) {
+                $msg = Common::jsonOutData(201,'该平台已经存在!~');
+            } else {
+                if (Brand::create($param)) {
+                    $msg = Common::jsonOutData(200,'添加成功!');
+                }
+            }
+        }
 
+        return response()->json($msg);
     }
 
     /**
@@ -130,5 +148,22 @@ class ProductController extends Controller
     public function paasDel(Request $request)
     {
 
+    }
+
+    public function passStatus(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['id'])) {
+
+            $pass = Brand::find($param['id']);
+            if (!empty($pass)) {
+                $pass->status = $param['status'];
+                if ($pass->save()) {
+                    $msg = Common::jsonOutData(200,'修改成功!');
+                }
+            }
+        }
+        return response()->json($msg);
     }
 }

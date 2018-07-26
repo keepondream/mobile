@@ -92,6 +92,7 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
     Route::any('paas','ProductController@paas')->name('paas');
     Route::any('paasAdd','ProductController@paasAdd')->name('paasAdd');
     Route::post('paasDel','ProductController@paasDel')->name('paasDel');
+    Route::post('passStatus','ProductController@passStatus')->name('passStatus');
 
 
 
