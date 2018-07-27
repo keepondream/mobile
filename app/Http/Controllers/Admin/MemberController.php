@@ -174,6 +174,10 @@ class MemberController extends Controller
         return view('admin/member_change_password',$data);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function memberDel(Request $request)
     {
         $param = Common::dataCheck($request->input());

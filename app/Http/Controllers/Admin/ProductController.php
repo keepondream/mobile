@@ -147,8 +147,19 @@ class ProductController extends Controller
      */
     public function paasDel(Request $request)
     {
-
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['id'])) {
+            Brand::destroy($param['id']);
+            $msg = Common::jsonOutData(200,'删除成功!~');
+        }
+        if (!empty($param['ids'])) {
+            Brand::destroy($param['ids']);
+            $msg = Common::jsonOutData(200,'删除成功!~');
+        }
+        return response()->json($msg);
     }
+
 
     public function passStatus(Request $request)
     {

@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Common\Common;
 use App\http\Model\Access;
 use App\http\Model\AdminUser;
+use App\http\Model\Brand;
+use App\http\Model\Category;
 use App\http\Model\Menu;
 use App\http\Model\Region;
 use App\http\Model\Role;
 use App\http\Model\RoleAccess;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -67,6 +71,91 @@ class HomeController extends Controller
             }
         } else {
             $outData[] = '管理员表有数据不能初始化!~';
+        }
+        //填充会员
+        if (empty(User::all()->toArray())) {
+            $res = [
+                [
+                    'name'=>'汤姆森',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'杰克逊',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'奥巴马',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'福克斯',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'姆巴佩',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'C罗',
+                    'password' => Hash::make('123456'),
+                ],
+                [
+                    'name'=>'罗纳尔多',
+                    'password' => Hash::make('123456'),
+                ],
+            ];
+            foreach ($res as $user) {
+                User::create($user);
+            }
+            $outData[] = '会员初始化成功!';
+        }
+        //填充分类后填充平台
+        if (empty(Category::all()->toArray())) {
+            $res = [
+                [
+                    'name' => '短息验证',
+                    'desc' => '获取短息服务'
+                ],
+                [
+                    'name' => '发送服务',
+                    'desc' => '发送短息服务'
+                ],
+                [
+                    'name' => '语音服务',
+                    'desc' => '语音服务'
+                ],
+            ];
+
+            foreach ($res as $k => $v) {
+                $v['sort'] = (string)(101 + $k);
+                $id = Category::create($v)->id;
+                if (!empty($id)) {
+                    $res = [
+                        [
+                            'name' => '大众点评',
+                            'desc' => '大众点评网',
+                            'category_id' => $id,
+                            'sort' => (string)(101 + $k),
+                        ],
+                        [
+                            'name' => '美团',
+                            'desc' => '美团网',
+                            'category_id' => $id,
+                            'sort' => (string)(102 + $k),
+                        ],
+                        [
+                            'name' => '抖音',
+                            'desc' => '抖音网',
+                            'category_id' => $id,
+                            'sort' => (string)(103 + $k),
+                        ],
+                    ];
+                    foreach ($res as $vv) {
+                        Brand::create($vv);
+                    }
+                }
+            }
+            $outData[] = '分类,平台,初始化成功!';
         }
         //填充菜单
         if (empty(Menu::all()->toArray())) {

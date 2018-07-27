@@ -27,7 +27,7 @@
                         @endif
                     </select>
 			    </span>
-                <button type="submit" class="btn btn-success"><i class="Hui-iconfont">&#xe600;</i> 添加</button>
+                <button type="submit" class="btn btn-success" onclick="return checkAuth1()"><i class="Hui-iconfont">&#xe600;</i> 添加</button>
             </form>
         </div>
         <div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l">
@@ -64,14 +64,14 @@
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_stop(this,'{{$brand->id}}')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
                                     <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd')}}','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
-                                    <a style="text-decoration:none" class="ml-5" onClick="active_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                                    <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @else
                                 <td class="td-status"><span class="label radius">已停用</span></td>
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_start(this,'{{$brand->id}}')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe6e1;</i></a>
                                     <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd')}}','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
-                                    <a style="text-decoration:none" class="ml-5" onClick="active_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                                    <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @endif
                         </tr>
@@ -100,6 +100,14 @@
                 {"orderable": false, "aTargets": [0,2,3,5,6]}// 制定列不参与排序
             ]
         });
+        //审核添加权限
+        function checkAuth1() {
+            if (checkAuth('paasAdd') == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
         //添加
         $("#form-category-add").validate({
             rules:{
@@ -137,14 +145,14 @@
         }
         /*编辑*/
         function product_brand_edit(title,url,id,w,h){
-            if (checkAuth('memberAdd') == 0) {
+            if (checkAuth('paasAdd') == 0) {
                 return false;
             };
             layer_show(title,url,w,h);
         }
         /*停用*/
         function member_stop(obj,id){
-            if (checkAuth('memberAudit') == 0) {
+            if (checkAuth('paasAudit') == 0) {
                 return false;
             };
             layer.confirm('确认要停用吗？',function(index){
@@ -173,7 +181,7 @@
 
         /*启用*/
         function member_start(obj,id){
-            if (checkAuth('memberAudit') == 0) {
+            if (checkAuth('paasAudit') == 0) {
                 return false;
             };
             layer.confirm('确认要启用吗？',function(index){
@@ -198,6 +206,62 @@
                     },
                 });
             });
+        }
+        /*删除*/
+        function system_category_del(obj,id){
+            if (checkAuth('paasDel') == 0) {
+                return false;
+            };
+            layer.confirm('确认要删除吗？',function(index){
+                $.ajax({
+                    type: 'POST',
+                    url: '{{route('paasDel')}}',
+                    data:{id:id,_token:_token},
+                    dataType: 'json',
+                    success: function(data){
+                        if (data.code == 200) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(data.msg,{icon:1,time:1000});
+                        } else {
+                            layer.msg(data.msg,{icon:5,time:1000});
+                        }
+                    },
+                    error:function(data) {
+                        console.log(data.msg);
+                    },
+                });
+            });
+        }
+        /*批量删除*/
+        function datadel() {
+            if (checkAuth('paasDel') == 0) {
+                return false;
+            };
+            var ids = [];
+            $('input[name="ids"]:checked').each(function (j) {
+                if (j >= 0) {
+                    ids.push($(this).val());
+                }
+            });
+            if (ids.length > 0) {
+                layer.confirm('确认要删除吗？',function(index) {
+                    $.ajax({
+                        type:'post',
+                        url:'{{route('paasDel')}}',
+                        data:{ids:ids,_token:_token},
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.code == 200) {
+                                window.location.reload();
+                            } else {
+                                layer.msg(data.msg,{icon:5,time:1000})
+                            }
+                        }
+                    });
+                });
+            } else {
+                layer.msg('请先选择再删除!~',{icon:5,time:1000})
+            }
         }
     </script>
 @endsection
