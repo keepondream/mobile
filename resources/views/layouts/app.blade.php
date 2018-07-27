@@ -123,15 +123,26 @@
                                     <ul class="dropDown-menu menu radius box-shadow">
                                         <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
                                         {{--<li><a href="#">切换账户</a></li>--}}
-                                        <li><a href="{{ route('logout') }}">{{__('退出')}}</a></li>
+                                        <li>
+                                            {{--<a href="{{ route('logout') }}">{{__('退出')}}</a>--}}
+                                            <a href="{{ route('logout') }}"
+                                               onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                                退出
+                                            </a>
+
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </li>
                                     </ul>
                                 </li>
                                 @else
                                 <li class="f-r">
-                                    <a href="javascript:;" onclick="modaldemo()">{{ __('注册') }}</a>
+                                    <a href="javascript:;" onclick="modaldemo('')">{{ __('注册') }}</a>
                                 </li>
                                 <li class="f-r">
-                                    <a href="javascript:;" onclick="modaldemo(1)">{{ __('登录') }}</a>
+                                    <a href="javascript:;" onclick="modaldemo('1')">{{ __('登录') }}</a>
                                 </li>
                                 @endauth
                         @endif
