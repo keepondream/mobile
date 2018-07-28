@@ -17,7 +17,7 @@ class CreateBrandsTable extends Migration
             $table->increments('id');
             $table->string('name')->commit('平台名称');
             $table->string('desc')->default('')->commit('平台描述');
-            $table->unsignedInteger('category_id')->index()->default('0')->commit('分类ID');
+            $table->string('sign')->default('')->commit('平台标识 用于切换调用接口');
             $table->unsignedInteger('sort')->index()->default('50')->commit('排序');
             $table->tinyInteger('status')->default('1')->commit('状态 0停用 1启用');
             $table->timestamps();

@@ -84,13 +84,18 @@ class Common
             ['title' => '积分管理','url' => 'creditCheck'],
             ['title' => '积分操作','url' => 'rankAction'],
             # 产品管理
-            ['title' => '分类管理','url' => 'category'],
-            ['title' => '添加分类','url' => 'categoryAdd'],
-            ['title' => '删除分类','url' => 'categoryDel'],
             ['title' => '平台管理','url' => 'paas'],
             ['title' => '添加平台','url' => 'paasAdd'],
             ['title' => '删除平台','url' => 'paasDel'],
             ['title' => '审核平台','url' => 'paasAudit'],
+            ['title' => '分类管理','url' => 'category'],
+            ['title' => '添加分类','url' => 'categoryAdd'],
+            ['title' => '删除分类','url' => 'categoryDel'],
+            ['title' => '项目列表','url' => 'project'],
+            ['title' => '添加项目','url' => 'projectAdd'],
+            ['title' => '删除项目','url' => 'projectDel'],
+            ['title' => '审核项目','url' => 'projectAudit'],
+
 
 
 
