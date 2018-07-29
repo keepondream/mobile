@@ -113,7 +113,7 @@ class ProductController extends Controller
     public function paas(Request $request)
     {
         //获取所有的分类
-        $data['category'] = Category::all();
+//        $data['category'] = Category::all();
         //获取所有的平台
         $data['brands'] = Brand::all();
         return view('admin/paas',$data);
@@ -126,19 +126,35 @@ class ProductController extends Controller
     public function paasAdd(Request $request)
     {
         $param = Common::dataCheck($request->input());
-        $brand = Brand::where('name',$param['name'])->get()->toArray();
-        $msg = Common::jsonOutData(201,'添加失败!~');
+        $data['brand'] = '';
+        if (!empty($param['id'])) {
+            $data['brand'] = Brand::find($param['id']);
+        }
         if ($request->isMethod('post')) {
-            if (!empty($brand)) {
-                $msg = Common::jsonOutData(201,'该平台已经存在!~');
+            $msg = Common::jsonOutData(201,'添加失败!~');
+            if (!empty($data['brand'])) {
+                $msg = Common::jsonOutData(201,'编辑失败!~');
+                //修改
+                $data['brand']->name = $param['name'];
+                $data['brand']->status = $param['status'];
+                !empty($param['sort']) && $data['brand']->sort = $param['sort'];
+                !empty($param['desc']) && $data['brand']->desc = $param['desc'];
+                if ($data['brand']->save()) {
+                    $msg = Common::jsonOutData(200,'编辑成功!');
+                }
             } else {
-                if (Brand::create($param)) {
-                    $msg = Common::jsonOutData(200,'添加成功!');
+                $brand = Brand::where('name',$param['name'])->get()->toArray();
+                if (!empty($brand)) {
+                    $msg = Common::jsonOutData(201,'该平台已经存在!~');
+                } else {
+                    if (Brand::create($param)) {
+                        $msg = Common::jsonOutData(200,'添加成功!');
+                    }
                 }
             }
+            return response()->json($msg);
         }
-
-        return response()->json($msg);
+        return view('admin/pass_add',$data);
     }
 
     /**

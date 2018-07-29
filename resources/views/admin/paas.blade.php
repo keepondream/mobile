@@ -11,22 +11,23 @@
             <form class="Huiform" method="post" action="{{route('paasAdd')}}" id="form-category-add">
                 @csrf
                 <input type="text" placeholder="请输入平台名称" value="" name="name" class="input-text" style="width:120px">
+                <input type="text" placeholder="平台描述" value="" name="desc" class="input-text" style="width: 120px;">
                 {{--<span class="btn-upload form-group">--}}
                 {{--<input class="input-text upload-url" type="text" name="uploadfile-2" id="uploadfile-2" readonly style="width:200px">--}}
                 {{--<a href="javascript:void(0);" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 上传logo</a>--}}
                 {{--<input type="file" multiple name="file-2" class="input-file">--}}
                 {{--</span> --}}
-                <span class="select-box" style="width:150px">
-                    <select class="select" name="category_id" size="1">
-                        @if(!empty($category) && count($category) > 0)
-                            @foreach($category as $value)
-                                <option value="{{$value->id}}">{{$value->name}}</option>
-                            @endforeach
-                        @else
-                            <option value="">--暂无分类--</option>
-                        @endif
-                    </select>
-			    </span>
+                {{--<span class="select-box" style="width:150px">--}}
+                    {{--<select class="select" name="category_id" size="1">--}}
+                        {{--@if(!empty($category) && count($category) > 0)--}}
+                            {{--@foreach($category as $value)--}}
+                                {{--<option value="{{$value->id}}">{{$value->name}}</option>--}}
+                            {{--@endforeach--}}
+                        {{--@else--}}
+                            {{--<option value="">--暂无分类--</option>--}}
+                        {{--@endif--}}
+                    {{--</select>--}}
+			    {{--</span>--}}
                 <button type="submit" class="btn btn-success" onclick="return checkAuth1()"><i class="Hui-iconfont">&#xe600;</i> 添加</button>
             </form>
         </div>
@@ -63,14 +64,14 @@
                                 <td class="td-status"><span class="label label-success radius">已启用</span></td>
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_stop(this,'{{$brand->id}}')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
-                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd')}}','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',430)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
                                     <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @else
                                 <td class="td-status"><span class="label radius">已停用</span></td>
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_start(this,'{{$brand->id}}')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe6e1;</i></a>
-                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd')}}','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',430)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
                                     <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @endif

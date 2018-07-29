@@ -23,7 +23,7 @@
         <div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
 		<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
-		<a class="btn btn-primary radius" onclick="system_category_add('添加菜单','{{route('menuAdd')}}')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加菜单</a>
+		<a class="btn btn-primary radius" onclick="system_category_add('添加菜单','{{route('menuAdd')}}','',350)" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加菜单</a>
 		</span>
             <span class="r">共有数据：<strong>{{!empty($count) ? $count : 0}}</strong> 条</span>
         </div>
@@ -50,7 +50,7 @@
                             @else
                                 <td class="text-l">&nbsp;&nbsp;├&nbsp;{{$v['name']}}</td>
                             @endif
-                            <td class="f-14"><a title="编辑" href="javascript:;" onclick="system_category_edit('菜单编辑','{{route('menuAdd',['id'=>$v['id']])}}','{{$v['id']}}','700','480')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                            <td class="f-14"><a title="编辑" href="javascript:;" onclick="system_category_edit('菜单编辑','{{route('menuAdd',['id'=>$v['id']])}}','{{$v['id']}}','','350')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
                                 <a title="删除" href="javascript:;" onclick="system_category_del(this,'{{$v['id']}}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
                         </tr>
                     @endforeach

@@ -6,11 +6,11 @@
             @csrf
             <input type="hidden" name="id" value="{{!empty($_GET['id']) ? $_GET['id'] : ''}}">
             <div id="tab-category" class="HuiTab">
-                <div class="tabBar cl">
-                    <span>基本设置</span>
+                {{--<div class="tabBar cl">--}}
+                    {{--<span>基本设置</span>--}}
                     {{--<span>模版设置</span>--}}
-                    <span>SEO</span>
-                </div>
+                    {{--<span>SEO</span>--}}
+                {{--</div>--}}
                 <div class="tabCon">
                     {{--<div class="row cl">--}}
                         {{--<label class="form-label col-xs-4 col-sm-3">栏目ID：</label>--}}
