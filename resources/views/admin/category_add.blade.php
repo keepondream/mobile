@@ -57,6 +57,14 @@
                     <input type="text" class="input-text" value="{{!empty($data) ? $data['sort'] : '50'}}" placeholder="请输入排序" id="sort" name="sort" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
                 </div>
             </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">
+                    <span class="c-red">*</span>
+                    分类地址：</label>
+                <div class="formControls col-xs-6 col-sm-6">
+                    <input type="text" class="input-text" value="{{!empty($data) ? $data['url'] : ''}}" placeholder="请输入分类地址" id="url" name="url">
+                </div>
+            </div>
             @if(!empty($data))
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-2">

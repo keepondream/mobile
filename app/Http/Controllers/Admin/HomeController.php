@@ -115,15 +115,18 @@ class HomeController extends Controller
             $res = [
                 [
                     'name' => '收码',
-                    'desc' => '获取短息验证码服务'
+                    'desc' => '获取短息验证码服务',
+                    'url' => 'code'
                 ],
                 [
                     'name' => '发送',
-                    'desc' => '发送短息服务'
+                    'desc' => '发送短息服务',
+                    'url' => 'send'
                 ],
                 [
                     'name' => '语音',
-                    'desc' => '语音服务'
+                    'desc' => '语音服务',
+                    'url' => 'voice',
                 ],
             ];
 

@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Common\Common;
+use App\http\Model\Category;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WelecomeController extends Controller
 {
+    public $category = '';      //获取导航分类
+    public function __construct()
+    {
+        $this->category = Category::where('status',1)->orderBy('sort','ASC')->orderBy('id','ASC')->get();
+    }
     //首页
     public function index(Request $request)
     {
@@ -18,8 +24,9 @@ class WelecomeController extends Controller
 //        var_dump(Auth::check());
 //        dd(Auth::user());
 //        Common::recordAdminUserLog('2','张三','首页','登陆首页');
+        $data['categorys'] = $this->category;
 
-        return view('welcome');
+        return view('welcome',$data);
     }
 
     /**
