@@ -91,7 +91,7 @@ class Common
             ['title' => '分类管理','url' => 'category'],
             ['title' => '添加分类','url' => 'categoryAdd'],
             ['title' => '删除分类','url' => 'categoryDel'],
-            ['title' => '项目列表','url' => 'project'],
+            ['title' => '项目管理','url' => 'project'],
             ['title' => '添加项目','url' => 'projectAdd'],
             ['title' => '删除项目','url' => 'projectDel'],
             ['title' => '审核项目','url' => 'projectAudit'],

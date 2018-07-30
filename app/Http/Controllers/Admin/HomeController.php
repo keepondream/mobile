@@ -149,7 +149,7 @@ class HomeController extends Controller
             ];
             foreach ($res as $k => $vv) {
                 $id = Brand::create($vv)->id;
-                if (!empty($brandid)) {
+                if (!empty($id)) {
                     //添加平台对应的项目
                     $res = [
                         [
@@ -202,8 +202,8 @@ class HomeController extends Controller
                             'sort' => (string)(107 + $k),
                         ],
                     ];
-                    foreach ($res as $vv) {
-                        Project::create($vv);
+                    foreach ($res as $vk) {
+                        Project::create($vk);
                     }
                 }
             }

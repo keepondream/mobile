@@ -21,4 +21,12 @@ class Brand extends Model
      */
     protected $fillable = ['name','desc','category_id','sort','status'];
 
+    /**
+     * 获得此平台的项目。
+     */
+    public function projects()
+    {
+        return $this->hasMany('App\http\Model\Project','id','brand_id');
+    }
+
 }

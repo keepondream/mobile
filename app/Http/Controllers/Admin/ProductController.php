@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Common\Common;
 use App\http\Model\Brand;
 use App\http\Model\Category;
+use App\http\Model\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -176,7 +177,11 @@ class ProductController extends Controller
         return response()->json($msg);
     }
 
-
+    /**
+     * 修改平台启用状态
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function passStatus(Request $request)
     {
         $param = Common::dataCheck($request->input());
@@ -193,4 +198,126 @@ class ProductController extends Controller
         }
         return response()->json($msg);
     }
+
+    /**
+     * 项目管理
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function project(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        //获取所有项目的数量
+        $data['count'] = Project::count();
+        $data['projects'] = Project::all();
+        //判断是否有搜索
+        if (!empty($param) && isset($param['searchData']) && $request->isMethod('post')) {
+            $idOrname = $param['searchData'];
+            if (!empty($idOrname)) {
+                $res = Project::where(function ($query) use ($idOrname) {
+                    $query->where('id',$idOrname)
+                        ->orWhere('name','like','%'.$idOrname.'%');
+                })->get();
+                if (count($res) > 0) {
+                    $data['projects'] = $res;
+                }
+            }
+        }
+        return view('admin/project',$data);
+    }
+
+    /**
+     * 添加项目
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function projectAdd(Request $request)
+    {
+        //获取数据并验证安全处理
+        $param = Common::dataCheck($request->input());
+        $data['data'] = '';
+        //获取平台
+        $data['brands'] = Brand::all();
+        if (!empty($param['id'])) {
+            $project = Project::find($param['id']);
+            if (!empty($project)) {
+                $data['project'] = $project;
+            }
+        }
+        //如果是post提交判断是否存在ID且不为空 有则更新无则新增
+        if($request->isMethod('post')){
+            if (!empty($project)) {
+                //修改
+                $project->name = $param['name'];
+                $project->sign = $param['sign'];
+                $project->brand_id = $param['brand_id'];
+                $project->status = $param['status'];
+                !empty($param['sort']) && $project->sort = $param['sort'];
+                $project->desc = $param['desc'];
+                $msg = Common::jsonOutData(201,'编辑失败!~');
+                if ($project->save()) {
+                    $msg = Common::jsonOutData(200,'编辑成功!');
+                }
+            } else {
+                //新增
+                $msg = Common::jsonOutData(201,'添加失败!~');
+                unset($param['id']);
+                $brand = Project::where(['name'=>$param['name'],'brand_id'=>$param['brand_id']])->get()->toArray();
+                if (!empty($brand)) {
+                    $msg = Common::jsonOutData(201,'该项目已经存在!~');
+                } else {
+                    $res = Project::create($param);
+                    if ($res) {
+                        $msg = Common::jsonOutData(200,'添加成功!');
+                    }
+                }
+
+            }
+            return response()->json($msg);
+        }
+        return view('admin/project_add',$data);
+
+    }
+
+    /**
+     * 删除项目
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function projectDel(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['id'])) {
+            Project::destroy($param['id']);
+            $msg = Common::jsonOutData(200,'删除成功!~');
+        }
+        if (!empty($param['ids'])) {
+            Project::destroy($param['ids']);
+            $msg = Common::jsonOutData(200,'删除成功!~');
+        }
+        return response()->json($msg);
+    }
+
+    /**
+     * 修改项目状态
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function projectStatus(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['id'])) {
+            $pass = Project::find($param['id']);
+            if (!empty($pass)) {
+                $pass->status = $param['status'];
+                if ($pass->save()) {
+                    $msg = Common::jsonOutData(200,'修改成功!');
+                }
+            }
+        }
+        return response()->json($msg);
+    }
+
 }
