@@ -21,6 +21,12 @@ Auth::routes();
 Route::get('/', 'WelecomeController@index')->name('home');
 Route::post('/checkMember','WelecomeController@checkMember')->name('checkMember');
 Route::get('/home', 'HomeController@product')->name('product');
+Route::get('checklogin','WelecomeController@checklogin')->name('checklogin');
+
+Route::group(['middleware'=>'auth'], function () {
+    Route::any('code','HomeController@code')->name('code');
+});
+
 
 
 

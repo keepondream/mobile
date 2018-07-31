@@ -26,4 +26,10 @@ class HomeController extends Controller
         dd(1231);
         return view('home');
     }
+
+    public function code()
+    {
+        dd(123);
+
+    }
 }
