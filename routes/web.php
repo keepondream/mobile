@@ -23,6 +23,9 @@ Route::post('/checkMember','WelecomeController@checkMember')->name('checkMember'
 Route::get('/home', 'HomeController@product')->name('product');
 Route::get('checklogin','WelecomeController@checklogin')->name('checklogin');
 
+//非法路劲跳转前台启动登录
+Route::get('/jump','WelecomeController@jump')->name('jump');
+
 Route::group(['middleware'=>'auth'], function () {
     Route::any('code','HomeController@code')->name('code');
 });

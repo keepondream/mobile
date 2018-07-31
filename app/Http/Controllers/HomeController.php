@@ -13,6 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
     }
 
@@ -27,9 +28,16 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function code()
+    /**
+     * 收码功能页
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function code(Request $request)
     {
-        dd(123);
+        $data['categorys'] = $this->category;//导航
+        $data['categoryUrl'] = 'code';//当前导航url
+        return view('code',$data);
 
     }
 }

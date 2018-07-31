@@ -10,12 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class WelecomeController extends Controller
 {
-    public $category = '';      //获取导航分类
     public function __construct()
     {
-        $this->category = Category::where('status',1)->orderBy('sort','ASC')->orderBy('id','ASC')->get();
+        parent::__construct();
     }
-    //首页
+
+    /**
+     * 全站首页
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
 //        Common::recordAdminUserLog('2','张三','首页','登陆首页');
@@ -25,8 +29,19 @@ class WelecomeController extends Controller
 //        dd(Auth::user());
 //        Common::recordAdminUserLog('2','张三','首页','登陆首页');
         $data['categorys'] = $this->category;
-
         return view('welcome',$data);
+    }
+
+    /**
+     * 未经登录手动指定URL 则跳转首页启动登录页
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function jump(Request $request)
+    {
+        $data['categorys'] = $this->category;
+        $data['jump'] = 1;
+        return view('welcome', $data);
     }
 
     /**

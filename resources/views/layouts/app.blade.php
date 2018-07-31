@@ -52,12 +52,12 @@
                 <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs JS-nav-toggle" href="javascript:;">&#xe667;</a>
                 <nav class="nav navbar-nav nav-collapse" role="navigation" id="Hui-navbar">
                     <ul class="cl">
-                        <li class="current">
+                        <li {{!empty($categoryUrl) ? '' : 'class=current'}}>
                             <a href="{{route('home')}}">首页</a>
                         </li>
                         @if(!empty($categorys) && (count($categorys) > 0))
                             @foreach($categorys as $category)
-                                <li>
+                                <li {{(!empty($categoryUrl) && ($categoryUrl == $category->url)) ? 'class=current' : '' }}>
                                     <a href="{{empty(\Illuminate\Support\Facades\Auth::user()) ? 'javascript:;' : '/'.$category->url}}" {{ empty(\Illuminate\Support\Facades\Auth::user()) ? 'onclick=modaldemo(\'1\')':''}}>{{$category->name}}</a>
                                 </li>
                             @endforeach
@@ -445,6 +445,13 @@
                 }
             }
         });
+        //启动登录
+        var jump = '{{!empty($jump) ? $jump : ''}}';
+        if (jump) {
+            setTimeout(function () {
+                modaldemo(1);
+            },500)
+        }
     });
 </script>
 @yield('script')
