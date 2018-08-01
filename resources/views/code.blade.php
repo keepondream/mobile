@@ -1,24 +1,98 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container ui-sortable">
+    <style>
+        .bgc {
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+        }
+        .header {
+            border-color: #ddd;
+            background-color: #f5f5f5;
+            color: #444;
+            border-bottom: solid 1px transparent;
+            padding: 8px 15px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+    </style>
+    <div class="container" style="border: none;">
         <div class="row cl">
-            <div class="col-xl-12 col-sm-6 mt-20">
-                <label for=""></label>
-                <h3 class="label label-success radius ">
-                    基础信息
-                </h3>
-                <div class="text-l">左对齐</div>
-                <div class="text-c">居中对齐</div>
-                <div class="text-r">右对齐</div>
-                当前用户{{$user->name}}
+            <div class="header col-xs-12 col-sm-12 mb-10">基础信息</div>
+            <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
+                <h3 class="label label-secondary radius">会员姓名:</h3>
+                {{$user->name}}
+            </div>
+            <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
+                <h3 class="label label-secondary radius">当前等级:</h3>
+                {{\App\Common\Common::grade($user->grade)['grade']}}
+                <img src="{{\App\Common\Common::grade($user->grade)['img']}}" class="avatar radius size-S">
+
+            </div>
+            <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
+                <h3 class="label label-secondary radius">可用积分:</h3>
+                {{$user->credit}}
+            </div>
+            <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
+
             </div>
         </div>
-        <div class="row cl">
 
-        </div>
-        <div class="row cl">
+        <div class="row cl mt-20">
+            <div class="header col-xs-12 col-sm-12 mb-10">短信验证码服务</div>
             <div class="col-md-12">
+                <div class="col-xs-12 col-sm-6"></div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="box">
+                        <div class="box-body">
+                            <dl>
+                                <dt>为什么接收不到短信，怎么应对？</dt>
+                                <dd>1、【对方的短信格式有变化】将收不到短信的手机号提供给客服重新设置项目；</dd>
+                                <dd>2、【对方对号段、归属地、运营商有限制】搞清楚对方要求并重新设置号码筛选规则；</dd>
+                                <dd>3、【号码已被使用过】拉黑号码并重新获取；</dd>
+                                <dd>4、【项目选择错误】请重新选择正确的项目；</dd>
+                                <dd>5、【其他原因】拉黑号码并重新获取；</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-body">
+                            <dl>
+                                <dt>如何计费，没有收到短信会扣费吗？</dt>
+                                <dd>每个项目每接收或发送一条短信计费一次，具体价格请参考项目信息里的价格</dd>
+                                <dd>本平台是成功接收或发送短信才会计费，未成功不扣费；</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-body">
+                            <dl>
+                                <dt>什么是项目？</dt>
+                                <dd>我们按不同的短信类别分为不同的项目，每个项目对应了可以接收的相应短信。</dd>
+                                <dd>比如短信内容为：【熊猫社区】您的验证码是969939，请在10分钟内正确输入，请勿外泄。</dd>
+                                <dd>该短信对应的项目名称为：熊猫社区</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-body">
+                            <dl>
+                                <dt>如何查询我要做的项目？</dt>
+                                <dd>在项目查询的关键词输入框中输入“熊猫”或者“熊猫社区”，系统将会查询出项目名称中包含该词的全部项目供你选择；</dd>
+                                <dd>在选择你要的项目后，系统将显示对应的项目编号、单价等修改信息；</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-body">
+                            <dl>
+                                <dt>没有我要的项目怎么办？</dt>
+                                <dd>如果无法找到你要的项目，请联系客服添加；</dd>
+                                <dd>联系客服时，最好能提供一条曾经收到过的短信原文，以便我们更快的为你添加项目；</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
                 <div class="box box-info">
 
                     <div class="form-horizontal">
@@ -124,55 +198,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="box">
-                    <div class="box-body">
-                        <dl>
-                            <dt>为什么接收不到短信，怎么应对？</dt>
-                            <dd>1、【对方的短信格式有变化】将收不到短信的手机号提供给客服重新设置项目；</dd>
-                            <dd>2、【对方对号段、归属地、运营商有限制】搞清楚对方要求并重新设置号码筛选规则；</dd>
-                            <dd>3、【号码已被使用过】拉黑号码并重新获取；</dd>
-                            <dd>4、【项目选择错误】请重新选择正确的项目；</dd>
-                            <dd>5、【其他原因】拉黑号码并重新获取；</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-body">
-                        <dl>
-                            <dt>如何计费，没有收到短信会扣费吗？</dt>
-                            <dd>每个项目每接收或发送一条短信计费一次，具体价格请参考项目信息里的价格</dd>
-                            <dd>本平台是成功接收或发送短信才会计费，未成功不扣费；</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-body">
-                        <dl>
-                            <dt>什么是项目？</dt>
-                            <dd>我们按不同的短信类别分为不同的项目，每个项目对应了可以接收的相应短信。</dd>
-                            <dd>比如短信内容为：【熊猫社区】您的验证码是969939，请在10分钟内正确输入，请勿外泄。</dd>
-                            <dd>该短信对应的项目名称为：熊猫社区</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-body">
-                        <dl>
-                            <dt>如何查询我要做的项目？</dt>
-                            <dd>在项目查询的关键词输入框中输入“熊猫”或者“熊猫社区”，系统将会查询出项目名称中包含该词的全部项目供你选择；</dd>
-                            <dd>在选择你要的项目后，系统将显示对应的项目编号、单价等修改信息；</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-body">
-                        <dl>
-                            <dt>没有我要的项目怎么办？</dt>
-                            <dd>如果无法找到你要的项目，请联系客服添加；</dd>
-                            <dd>联系客服时，最好能提供一条曾经收到过的短信原文，以便我们更快的为你添加项目；</dd>
-                        </dl>
-                    </div>
-                </div>
+
             </div>
         </div>
 

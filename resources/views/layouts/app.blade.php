@@ -126,6 +126,7 @@
                         @if (Route::has('login'))
                                 @auth
                                 <li class="dropDown dropDown_hover f-r">
+                                    <img src="static/h-ui/images/ucnter/avatar-default.jpg" class="avatar radius size-M">
                                     <a href="#" class="dropDown_A">{{ Auth::user()->name }} <i class="Hui-iconfont">&#xe6d5;</i></a>
                                     <ul class="dropDown-menu menu radius box-shadow">
                                         <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>

@@ -116,6 +116,31 @@ class Common
     }
 
     /**
+     * 会员等级和对应图标
+     * @param $grade
+     * @return array
+     */
+    public static function grade($grade)
+    {
+        $arr = [
+            '1' => '铜牌',
+            '2' => '银牌',
+            '3' => '金牌',
+            '4' => '砖石',
+        ];
+        $imgArr = [
+            '1' => 'static/h-ui/images/tongpai.png',
+            '2' => 'static/h-ui/images/yinpai.png',
+            '3' => 'static/h-ui/images/jinpai.png',
+            '4' => 'static/h-ui/images/zhuanshi.png',
+        ];
+        return [
+            'grade' => $arr[$grade],
+            'img' => $imgArr[$grade]
+        ];
+    }
+
+    /**
      * 表单提交非法字符过滤处理
      * @param $array
      * @return array|mixed|string
