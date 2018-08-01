@@ -13,7 +13,8 @@
     <script type="text/javascript" src="{{ asset('lib/respond.min.js') }}"></script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="{{ asset('static/h-ui/css/H-ui.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.slider.css') }}" />
+    {{--<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.slider.css') }}" />--}}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jigsaw.css') }}" />
     <link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.min.css" />
     <!--[if lt IE 9]>
     <link href="{{ asset('static/h-ui/css/H-ui.ie.css') }}" rel="stylesheet" type="text/css" />
@@ -183,7 +184,7 @@
 <!--普通弹出层-->
 <div id="modal-demo" class="modal fade middle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('register') }}" method="post" class="form form-horizontal responsive" id="demoform">
+        <form action="{{ route('register') }}" method="post" class="form form-horizontal responsive" id="demoformonlylogin">
         <div class="modal-content radius">
             <div class="modal-header">
                 <h3 class="modal-title" style="text-align: center;" id="registerTitle">注册</h3>
@@ -215,7 +216,9 @@
                             <label class="form-label col-xs-3">
                             </label>
                             <div class="formControls col-xs-8">
-                                <div id="slider2" class="slider"></div>
+                                {{--<div id="slider2" class="slider"></div>--}}
+                                <div id="captcha" style="position: relative"></div>
+                                <div id="huodongmsg" class="text-l mt-20"></div>
                             </div>
                         </div>
                 </div>
@@ -235,23 +238,52 @@
 <script type="text/javascript" src="{{ asset('lib/jquery.validation/1.14.0/jquery.validate.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
 <script type="text/javascript" src="{{ asset('lib/jquery.validation/1.14.0/messages_zh.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/jquery.slider.min.js') }}"></script>
+{{--<script type="text/javascript" src="{{ asset('js/jquery.slider.min.js') }}"></script>--}}
+<script type="text/javascript" src="{{ asset('js/jigsaw.js') }}"></script>
 
 <script>
     var _token = $("meta[name='csrf-token']").attr('content');
-    //弹窗
+    var huadongstatus = '';
+    //判断是否存在class
+    function hasClass( elements,cName ){
+        return !!elements.className.match( new RegExp( "(\\s|^)" + cName + "(\\s|$)") ); // ( \\s|^ ) 判断前面是否有空格 （\\s | $ ）判断后面是否有空格 两个感叹号为转换为布尔值 以方便做判断
+    };
+    //添加class
+    function addClass( elements,cName ){
+        if( !hasClass( elements,cName ) ){
+            elements.className += " " + cName;
+        };
+    }
+    //删除class
+    function removeClass( elements,cName ){
+        if( hasClass( elements,cName ) ){
+            elements.className = elements.className.replace( new RegExp( "(\\s|^)" + cName + "(\\s|$)" )," " ); // replace方法是替换
+        };
+    };
+    //滑动验证失败
+    function cleanMsg() {
+        document.getElementById('huodongmsg').innerHTML = '验证失败！';
+        removeClass(document.getElementById('huodongmsg'), 'label-success');
+        addClass(document.getElementById('huodongmsg'), 'label');
+        addClass(document.getElementById('huodongmsg'), 'label-danger');
+        addClass(document.getElementById('huodongmsg'), 'radius');
+        huadongstatus = '';
+    }
+
+
+    //登陆注册弹窗
     function modaldemo(status){
-        $("#slider2").slider("restore");
-        $("input[name='checkAuth']").val('');
+        //初始化验证值
+        huadongstatus = '';
         if (status == 1){
             var url = '{{ route('login') }}';
-            $('#demoform').attr('action',url);
+            $('#demoformonlylogin').attr('action',url);
             $("#registerTitle").html('登录');
             $('#registerDivPwd2').remove();
             $('#registerDivSubmit').html('登录');
         } else {
             var url = '{{ route('register') }}';
-            $('#demoform').attr('action',url);
+            $('#demoformonlylogin').attr('action',url);
             $("#registerTitle").html('注册');
             $('#registerDivSubmit').html('立即注册');
             if (!$('#registerDivPwd2').length) {
@@ -259,15 +291,27 @@
                 $("#registerDivPwd").after(pasdiv);
             }
         }
+        $('#captcha').empty();
+        $('#huodongmsg').empty();
+
+        jigsaw.init({
+            el: document.getElementById('captcha'),
+            onSuccess: function() {
+                document.getElementById('huodongmsg').innerHTML = '验证成功！';
+                removeClass(document.getElementById('huodongmsg'), 'label-danger');
+                addClass(document.getElementById('huodongmsg'), 'label');
+                addClass(document.getElementById('huodongmsg'), 'label-success');
+                addClass(document.getElementById('huodongmsg'), 'radius');
+                huadongstatus = 1;
+            },
+            onFail: cleanMsg,
+            onRefresh: cleanMsg
+        });
         $("#modal-demo").modal("show");
     }
     //消息框
     function modalalertdemo(msg){
         $.Huimodalalert(msg,2000);
-    }
-    //登录
-    function loginClick(){
-        $('#Hui-navbar li').last().click();
     }
 
     $(function(){
@@ -319,7 +363,7 @@
             maxlength:200.
         });
 
-        $("#demoform").validate({
+        $("#demoformonlylogin").validate({
             rules:{
                 name:{
                     required:true,
@@ -339,7 +383,7 @@
             focusCleanup:true,
             success:"valid",
             submitHandler:function(form){
-                if ($('input[name="checkAuth"]').val() == ''){
+                if (!huadongstatus){
                     modalalertdemo('请滑动验证!~');
                     return false;
                 }
@@ -366,8 +410,7 @@
                     }
                 }
                 return true;
-                // $(form).ajaxSubmit();
-
+//                 $(form).ajaxSubmit();
             }
         });
 

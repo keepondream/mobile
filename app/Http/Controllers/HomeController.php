@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -37,6 +38,7 @@ class HomeController extends Controller
     {
         $data['categorys'] = $this->category;//导航
         $data['categoryUrl'] = 'code';//当前导航url
+        $data['user'] = Auth::user();
         return view('code',$data);
 
     }
