@@ -11,7 +11,7 @@
             <form class="Huiform" method="post" action="{{route('paasAdd')}}" id="form-category-add">
                 @csrf
                 <input type="text" placeholder="请输入平台名称" value="" name="name" class="input-text" style="width:120px">
-                <input type="text" placeholder="平台描述" value="" name="desc" class="input-text" style="width: 120px;">
+                <input type="text" placeholder="标识字段" value="" name="sign" class="input-text" style="width: 120px;">
                 {{--<span class="btn-upload form-group">--}}
                 {{--<input class="input-text upload-url" type="text" name="uploadfile-2" id="uploadfile-2" readonly style="width:200px">--}}
                 {{--<a href="javascript:void(0);" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 上传logo</a>--}}
@@ -41,6 +41,7 @@
                     <th width="25"><input type="checkbox" name="" value=""></th>
                     <th width="70">ID</th>
                     <th width="150">平台名称</th>
+                    <th width="80">标识字段</th>
                     <th>具体描述</th>
                     <th width="80">排序</th>
                     <th width="70">状态</th>
@@ -57,21 +58,22 @@
                             {{--<td style="display: none;">{{$brand->sort}}</td>--}}
                             {{--<td><img src="temp/brand/dongpeng.jpeg"></td>--}}
                             {{--<td class="text-l"><img title="国内品牌" src="static/h-ui.admin/images/cn.gif"> 东鹏</td>--}}
-                            <td class="text-l">{{$brand->name}}</td>
+                            <td >{{$brand->name}}</td>
+                            <td >{{$brand->sign}}</td>
                             <td class="text-l">{{$brand->desc}}</td>
                             <td>{{$brand->sort}}</td>
                         @if($brand->status == 1)
                                 <td class="td-status"><span class="label label-success radius">已启用</span></td>
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_stop(this,'{{$brand->id}}')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
-                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',430)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',500)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
                                     <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @else
                                 <td class="td-status"><span class="label radius">已停用</span></td>
                                 <td class="f-14 product-brand-manage">
                                     <a style="text-decoration:none" onClick="member_start(this,'{{$brand->id}}')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe6e1;</i></a>
-                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',430)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                    <a style="text-decoration:none" onClick="product_brand_edit('平台编辑','{{route('paasAdd',['id'=>$brand->id])}}','{{$brand->id}}','',500)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
                                     <a style="text-decoration:none" class="ml-5" onClick="system_category_del(this,'{{$brand->id}}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                 </td>
                             @endif
@@ -98,7 +100,7 @@
             "bStateSave": true,//状态保存
             "aoColumnDefs": [
                 // {"bVisible": false, "aTargets": [ 3 ]}, //控制列的隐藏显示
-                {"orderable": false, "aTargets": [0,2,3,5,6]}// 制定列不参与排序
+                {"orderable": false, "aTargets": [0,2,3,4,6,7]}// 制定列不参与排序
             ]
         });
         //审核添加权限
@@ -112,8 +114,9 @@
         //添加
         $("#form-category-add").validate({
             rules:{
-                category_id:"required",
+//                category_id:"required",
                 name:"required",
+                sign:"required",
             },
             onkeyup:false,
             focusCleanup:true,

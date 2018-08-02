@@ -139,6 +139,7 @@ class ProductController extends Controller
                 $data['brand']->name = $param['name'];
                 $data['brand']->status = $param['status'];
                 !empty($param['sort']) && $data['brand']->sort = $param['sort'];
+                !empty($param['sign']) && $data['brand']->sign = $param['sign'];
                 !empty($param['desc']) && $data['brand']->desc = $param['desc'];
                 if ($data['brand']->save()) {
                     $msg = Common::jsonOutData(200,'编辑成功!');

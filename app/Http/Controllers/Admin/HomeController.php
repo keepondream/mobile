@@ -77,32 +77,52 @@ class HomeController extends Controller
         if (empty(User::all()->toArray())) {
             $res = [
                 [
+                    'name' => '范乐观',
+                    'password' => Hash::make('123456'),
+                    'grade' => '6',
+                    'credit' => '10000',
+                ],
+                [
                     'name' => '汤姆森',
                     'password' => Hash::make('123456'),
+                    'grade' => '5',
+                    'credit' => '500',
                 ],
                 [
                     'name' => '杰克逊',
                     'password' => Hash::make('123456'),
+                    'grade' => '4',
+                    'credit' => '400',
                 ],
                 [
                     'name' => '奥巴马',
                     'password' => Hash::make('123456'),
+                    'grade' => '3',
+                    'credit' => '300',
                 ],
                 [
                     'name' => '福克斯',
                     'password' => Hash::make('123456'),
+                    'grade' => '2',
+                    'credit' => '200',
                 ],
                 [
                     'name' => '姆巴佩',
                     'password' => Hash::make('123456'),
+                    'grade' => '1',
+                    'credit' => '100',
                 ],
                 [
                     'name' => 'C罗',
                     'password' => Hash::make('123456'),
+                    'grade' => '1',
+                    'credit' => '100',
                 ],
                 [
                     'name' => '罗纳尔多',
                     'password' => Hash::make('123456'),
+                    'grade' => '1',
+                    'credit' => '100',
                 ],
             ];
             foreach ($res as $user) {
@@ -141,12 +161,14 @@ class HomeController extends Controller
             $res = [
                 [
                     'name' => '易码平台',
-                    'desc' => '',
+                    'desc' => 'yima',
+                    'sign' => '',
                     'sort' => '101',
                 ],
                 [
                     'name' => '麦子平台',
                     'desc' => '',
+                    'sign' => 'maizi',
                     'sort' => '102',
                 ],
             ];

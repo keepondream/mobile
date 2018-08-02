@@ -126,7 +126,7 @@
                         @if (Route::has('login'))
                                 @auth
                                 <li class="dropDown dropDown_hover f-r">
-                                    <img src="static/h-ui/images/ucnter/avatar-default.jpg" class="avatar radius size-M">
+                                    <img src="{{!empty(\Illuminate\Support\Facades\Auth::user()->avatar) ? \Illuminate\Support\Facades\Auth::user()->avatar:'/static/h-ui/images/ucnter/avatar-default.jpg'}}" class="avatar radius size-M">
                                     <a href="#" class="dropDown_A">{{ Auth::user()->name }} <i class="Hui-iconfont">&#xe6d5;</i></a>
                                     <ul class="dropDown-menu menu radius box-shadow">
                                         <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
@@ -271,7 +271,6 @@
         huadongstatus = '';
     }
 
-
     //登陆注册弹窗
     function modaldemo(status){
         //初始化验证值
@@ -394,24 +393,43 @@
                 if (name && pwd2) {
                     var status = 1;
                         $.ajax({
-                        type: 'POST',
-                        url: '{{route('checkMember')}}',
-                        data:{name:name,_token:_token},
-                        dataType: 'json',
-                        async: false,
-                        success: function(data){
-                            if (data.code != 200) {
-                                modalalertdemo('此用户名已经存在!~');
-                                status = 2;
+                            type: 'POST',
+                            url: '{{route('checkMember')}}',
+                            data:{name:name,_token:_token},
+                            dataType: 'json',
+                            async: false,
+                            success: function(data){
+                                if (data.code != 200) {
+                                    modalalertdemo('此用户名已经存在!~');
+                                    status = 2;
+                                }
                             }
-                        }
-                    });
+                        });
                     if (status == 2) {
                         return false;
                     }
                 }
-                return true;
-//                 $(form).ajaxSubmit();
+
+                var url = $('#demoformonlylogin').attr('action');
+                $(form).ajaxSubmit({
+                    type: 'post',
+                    url: url,
+                    success: function(data){
+                        if ((data.code != 200) && (data.code != 208)) {
+                            modalalertdemo(data.msg);
+                            setTimeout(function () {
+                                window.location.reload();
+                            },2000)
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function(XmlHttpRequest, textStatus, errorThrown){
+                        modalalertdemo(JSON.parse(XmlHttpRequest.responseText).errors['name'][0]);
+                     }
+
+                });
+
             }
         });
 
@@ -469,26 +487,6 @@
             $("body").removeClass('sideBox-open');
         });
 
-        //滑动验证
-        $("#slider2").slider({
-            width: 340, // width
-            height: 40, // height
-            sliderBg: "rgb(134, 134, 131)", // 滑块背景颜色
-            color: "#fff", // 文字颜色
-            fontSize: 14, // 文字大小
-            bgColor: "#33CC00", // 背景颜色
-            textMsg: "按住滑块，拖拽验证", // 提示文字
-            successMsg: "验证通过", // 验证成功提示文字
-            successColor: "red", // 滑块验证成功提示文字颜色
-            time: 400, // 返回时间
-            callback: function(result) { // 回调函数，true(成功),false(失败)
-                if (result) {
-                    $('input[name="checkAuth"]').val('1');
-                } else {
-                    $('input[name="checkAuth"]').val('');
-                }
-            }
-        });
         //启动登录
         var jump = '{{!empty($jump) ? $jump : ''}}';
         if (jump) {

@@ -26,7 +26,7 @@
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">当前等级:</h3>
                 {{\App\Common\Common::grade($user->grade)['grade']}}
-                <img src="{{\App\Common\Common::grade($user->grade)['img']}}" class="avatar radius size-S">
+                <img src="{{\App\Common\Common::grade($user->grade)['img']}}" class="avatar radius size-S" style="border-radius: 0;">
 
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
@@ -41,7 +41,60 @@
         <div class="row cl mt-20">
             <div class="header col-xs-12 col-sm-12 mb-10">短信验证码服务</div>
             <div class="col-md-12">
-                <div class="col-xs-12 col-sm-6"></div>
+                <div class="col-xs-12 col-sm-6">
+                    <table class="table table-border table-bg table-bordered table-hover">
+                        <thead>
+                        <tr class="text-c">
+                            <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
+                            <th>
+                                <span class="select-box">
+                                    <select class="select" size="1" name="brandsign" id="brandsignselect">
+                                        @if(!empty($brand) && (count($brand) > 0))
+                                            @foreach($brand as $brandonly)
+                                                <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="" selected>--暂未开放--</option>
+                                        @endif
+                                    </select>
+                                </span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="text-c">
+                            <th width="20%">运 营 商</th>
+                            <th>
+                                <span class="select-box">
+                                    <select class="select" size="1" name="ispsign" id="ispsignselect">
+                                        @if(!empty($brand) && (count($brand) > 0))
+                                            @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
+                                                @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
+                                                    <option value="{{$ispk}}">{{$ispv}}</option>
+                                                @endforeach
+                                            @else
+                                                <option value="" selected>--暂未开放--</option>
+                                            @endif
+                                        @else
+                                            <option value="" selected>--暂未开放--</option>
+                                        @endif
+                                    </select>
+                                </span>
+                            </th>
+                        </tr>
+                        <tr class="active"><th>.active</th><td>悬停在行</td></tr>
+                        <tr class="success"><th>.success</th><td>成功或积极</td></tr>
+                        <tr class="warning"><th>.warning</th><td>警告或出错</td></tr>
+                        <tr class="danger"><th>.danger</th><td>危险</td></tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <div class="col-xs-6 col-sm-2" style="padding: 4px 5px;line-height: 14px;">线路分支</div>
+                        <div class="col-xs-6 col-sm-2">
+
+                        </div>
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="box">
                         <div class="box-body">
@@ -204,6 +257,37 @@
 
     </div>
 
+@endsection
+
+@section('script')
+    <script>
+        $("#brandsignselect").change(function() {
+            if ($('#brandsignselect').val()) {
+
+                $.ajax({
+                    type:"post",
+                    url: "{{route('getisp')}}",
+                    data:{_token:_token,sign:$("#brandsignselect").val()},
+                    dataType:"json",//指定返回的格式
+                    success:function(data){
+                        if (data.code == 200) {
+                            //清空option
+                            $("#ispsignselect option").remove();
+                            for(var i=0;i<data.data['isp'].length;i++){
+                                $("<option value='"+i+"'>"+data.data['isp'][i]+"</option>").appendTo($("#ispsignselect"));//添加下拉列表
+                            }
+                        }
+
+                    }
+                });
+            } else {
+                $("#ispsignselect option").remove().appendTo();
+                $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"))
+
+            }
+        });
+
+    </script>
 @endsection
 
 

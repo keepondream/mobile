@@ -123,21 +123,56 @@ class Common
     public static function grade($grade)
     {
         $arr = [
-            '1' => '铜牌',
-            '2' => '银牌',
-            '3' => '金牌',
-            '4' => '砖石',
+            '1' => '铜牌会员',
+            '2' => '银牌会员',
+            '3' => '金牌会员',
+            '4' => '铂金会员',
+            '5' => '砖石会员',
+            '6' => 'VIP会员',
         ];
         $imgArr = [
             '1' => 'static/h-ui/images/tongpai.png',
             '2' => 'static/h-ui/images/yinpai.png',
             '3' => 'static/h-ui/images/jinpai.png',
-            '4' => 'static/h-ui/images/zhuanshi.png',
+            '4' => 'static/h-ui/images/bojin.png',
+            '5' => 'static/h-ui/images/zhuanshi.png',
+            '6' => 'static/h-ui/images/vip.png',
         ];
         return [
             'grade' => $arr[$grade],
             'img' => $imgArr[$grade]
         ];
+    }
+
+    /**
+     * 不同平台的运营商参数
+     * @param $sign
+     * @return array
+     */
+    public static function isp($sign)
+    {
+        $arryima = [
+            '0' => '--不限--',
+            '1' => '联通',
+            '2' => '移动',
+            '3' => '电信',
+        ];
+        $arrmaizi = [
+            '0' => '--不限--',
+            '1' => '移动',
+            '2' => '联通',
+            '3' => '电信',
+            '4' => '国外',
+            '5' => '虚拟号',
+            '6' => '非虚拟号',
+        ];
+        if ($sign == 'yima') {
+            return $arryima;
+        } else if ($sign == 'maizi') {
+            return $arrmaizi;
+        } else {
+            return null;
+        }
     }
 
     /**

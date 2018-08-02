@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Common;
+use App\http\Model\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +41,26 @@ class HomeController extends Controller
         $data['categorys'] = $this->category;//导航
         $data['categoryUrl'] = 'code';//当前导航url
         $data['user'] = Auth::user();
+        $data['brand'] = Brand::where('status','1')->orderBy('sort','ASC')->orderBy('id','ASC')->get();
         return view('code',$data);
 
+    }
+
+    /**
+     * 获取平台对应的运营商
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getisp(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['sign'])) {
+            $isp = Common::isp($param['sign']);
+            if (!empty($isp)) {
+                $msg = Common::jsonOutData(200,'success',compact('isp'));
+            }
+        }
+        return response()->json($msg);
     }
 }

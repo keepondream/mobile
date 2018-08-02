@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('county')->default('0')->commit('区县');
             $table->string('desc')->default('')->commit('个人描述');
             $table->string('avatar')->default('')->commit('头像地址');
-            $table->tinyInteger('grade')->default('1')->commit('等级  1 铜牌 2 银牌 3 黄金 4 砖石');
+            $table->tinyInteger('grade')->default('1')->commit('等级  1 铜牌 2 银牌 3 黄金 4 铂金 5 砖石 6 VIP');
             $table->string('credit')->default('0')->commit('积分');
             $table->rememberToken();
             $table->timestamps();

@@ -14,9 +14,17 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">
                     <span class="c-red">*</span>
-                    排序：</label>
+                    排&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;序：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" class="input-text" value="{{!empty($brand->sort) ? $brand->sort : '50'}}" placeholder="请输入排序" id="sort" name="sort" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">
+                    <span class="c-red">*</span>
+                    字段标识：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="{{!empty($brand->sign) ? $brand->sign : ''}}" placeholder="请输入标识" id="sign" name="sign">
                 </div>
             </div>
             @if(!empty($brand->id))
@@ -65,6 +73,9 @@
             $("#form-member-add").validate({
                 rules:{
                     name:{
+                        required:true,
+                    },
+                    sign:{
                         required:true,
                     },
                     desc:{

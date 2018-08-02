@@ -1,5 +1,5 @@
 ﻿@extends('layouts.adminchild')
-@section('title','添加用户')
+@section('title','添加会员')
 @section('content')
     <article class="page-container">
         <form action="{{route('memberAdd')}}" method="post" class="form form-horizontal" id="form-member-add" enctype="multipart/form-data">

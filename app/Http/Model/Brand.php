@@ -19,7 +19,7 @@ class Brand extends Model
      *
      * @var array
      */
-    protected $fillable = ['name','desc','category_id','sort','status'];
+    protected $fillable = ['name','desc','category_id','sort','status','sign'];
 
     /**
      * 获得此平台的项目。
