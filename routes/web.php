@@ -31,6 +31,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::post('getISP','HomeController@getISP')->name('getisp');
     Route::post('getProject','HomeController@getProject')->name('getProject');
     Route::post('getCitySelect','HomeController@getCitySelect')->name('getCitySelect');
+    Route::post('getMobile','HomeController@getMobile')->name('getMobile');
 });
 
 

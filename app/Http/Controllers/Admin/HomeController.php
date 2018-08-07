@@ -162,8 +162,8 @@ class HomeController extends Controller
             $res = [
                 [
                     'name' => '易码平台',
-                    'desc' => 'yima',
-                    'sign' => '',
+                    'desc' => '',
+                    'sign' => 'yima',
                     'sort' => '101',
                 ],
                 [

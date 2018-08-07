@@ -38,12 +38,13 @@
         </div>
 
         <div class="row cl mt-20">
-            <div class="header col-xs-12 col-sm-12 mb-10">短信验证码服务</div>
+            <div class="header col-xs-12 col-sm-12 mb-10">获取手机号码</div>
             <div class="col-md-12">
+                {{--左侧区域--}}
                 <div class="col-xs-12 col-sm-6">
-                    <table class="table table-border table-bg table-bordered table-hover">
-                        {{--<thead>--}}
-                        {{--</thead>--}}
+                    <form action="{{route('getMobile')}}" method="post" class="form form-horizontal" id="form-get-mobile">
+                        @csrf
+                        <table class="table table-border table-bg table-bordered table-hover">
                         <tbody>
                         <tr class="text-c">
                             <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
@@ -100,7 +101,7 @@
                             <th width="20%">运 营 商</th>
                             <td>
                                 <span class="select-box">
-                                    <select class="select" size="1" name="ispsign" id="ispsignselect">
+                                    <select class="select" size="1" name="isp">
                                         @if(!empty($brand) && (count($brand) > 0))
                                             @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
                                                 @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
@@ -121,14 +122,14 @@
                             <td>
                                 <div class="col-xs-6 col-sm-6" style="padding-left: 0px;padding-right: 0px;" id="area">
                                     <span class="select-box">
-                                        <select class="select" size="1" name="province" id="ispsignselect1">
+                                        <select class="select" size="1" name="province">
                                             <option value="0" selected>--不限--</option>
                                         </select>
                                     </span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6"  style="padding-left: 10px;padding-right: 0px;" id="city">
                                     <span class="select-box">
-                                        <select class="select" size="1" name="city" id="ispsignselect1">
+                                        <select class="select" size="1" name="city">
                                             <option value="0" selected>--不限--</option>
                                         </select>
                                     </span>
@@ -146,33 +147,24 @@
                         <tr class="text-c">
                             <th width="20%">排除号段</th>
                             <td>
-                                <input type="text" name="ExcludeNo" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-|.]+/,'');}).call(this)" onblur="this.v();">
+                                <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-|.]+/,'');}).call(this)" onblur="this.v();">
                             </td>
                         </tr>
                         <tr class="text-c">
                             <th width="20%">获取数量</th>
-                            <td>
-                                <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && this.value > 10){this.value = ''};}).call(this)" onblur="this.v();">
+                            <td style="position: relative;padding-top: 5px;">
+                                <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();">
                             </td>
                         </tr>
                         <tr class="text-c">
                             <th width="20%"></th>
                             <td>
-                                <button type="button" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
+                                <button type="submit" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
                             </td>
                         </tr>
-                        <tr class="active"><th>.active</th><td>悬停在行</td></tr>
-                        <tr class="success"><th>.success</th><td>成功或积极</td></tr>
-                        <tr class="warning"><th>.warning</th><td>警告或出错</td></tr>
-                        <tr class="danger"><th>.danger</th><td>危险</td></tr>
                         </tbody>
                     </table>
-                    <div>
-                        <div class="col-xs-6 col-sm-2" style="padding: 4px 5px;line-height: 14px;">线路分支</div>
-                        <div class="col-xs-6 col-sm-2">
-
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 {{--右侧区域--}}
                 <div class="col-xs-12 col-sm-6">
@@ -210,15 +202,6 @@
                     <div class="box">
                         <div class="box-body">
                             <dl>
-                                <dt>如何查询我要做的项目？</dt>
-                                <dd>在项目查询的关键词输入框中输入“熊猫”或者“熊猫社区”，系统将会查询出项目名称中包含该词的全部项目供你选择；</dd>
-                                <dd>在选择你要的项目后，系统将显示对应的项目编号、单价等修改信息；</dd>
-                            </dl>
-                        </div>
-                    </div>
-                    <div class="box">
-                        <div class="box-body">
-                            <dl>
                                 <dt>没有我要的项目怎么办？</dt>
                                 <dd>如果无法找到你要的项目，请联系客服添加；</dd>
                                 <dd>联系客服时，最好能提供一条曾经收到过的短信原文，以便我们更快的为你添加项目；</dd>
@@ -226,121 +209,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="box box-info">
-
-                    <div class="form-horizontal">
-                        <div class="box-body">
-                            <div class="row form-group">
-                                <label for="MobileItemName" class="col-sm-3 control-label">短信项目：</label>
-                                <div class="col-sm-7">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="MobileItemName" placeholder="请点击右侧按钮查询项目" disabled="">
-                                        <span class="input-group-btn">
-<button type="button" id="seachitembtn" class="btn btn-info btn-flat">选择项目</button>
-</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="input-group">
-<span class="input-group-btn">
-<a class="btn btn-success btn-flat" target="_blank" href="../helps.html">新手教程</a>
-</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="ISPList" class="col-sm-3 control-label">运营商：</label>
-                                <div class="col-sm-9">
-                                    <select class="form-control" id="ISPList">
-                                        <option value="0">—不限—</option>
-                                        <option value="2">联通</option>
-                                        <option value="1">移动</option>
-                                        <option value="3">电信</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="ProvinceList" class="col-sm-3 control-label">归属地：</label>
-                                <div class="col-sm-4">
-                                    <select class="form-control" id="ProvinceList">
-                                        <option value="0">—不限—</option>
-                                        <option value="110000">北京市</option><option value="120000">天津市</option><option value="130000">河北省</option><option value="140000">山西省</option><option value="150000">内蒙古自治区</option><option value="210000">辽宁省</option><option value="220000">吉林省</option><option value="230000">黑龙江省</option><option value="310000">上海市</option><option value="320000">江苏省</option><option value="330000">浙江省</option><option value="340000">安徽省</option><option value="350000">福建省</option><option value="360000">江西省</option><option value="370000">山东省</option><option value="410000">河南省</option><option value="420000">湖北省</option><option value="430000">湖南省</option><option value="440000">广东省</option><option value="450000">广西壮族自治区</option><option value="460000">海南省</option><option value="500000">重庆市</option><option value="510000">四川省</option><option value="520000">贵州省</option><option value="530000">云南省</option><option value="540000">西藏自治区</option><option value="610000">陕西省</option><option value="620000">甘肃省</option><option value="630000">青海省</option><option value="640000">宁夏回族自治区</option><option value="650000">新疆维吾尔自治区</option></select>
-                                </div>
-                                <div class="col-sm-5">
-                                    <select class="form-control" id="CityList">
-                                        <option value="0">—不限—</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="ExcludeNo" class="col-sm-3 control-label">排除号段：</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="ExcludeNo" placeholder="如：171.172.174.178">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="MobileNo" class="col-sm-3 control-label">手机号码：</label>
-                                <div class="col-sm-3">
-                                    <button class="btn" id="MobileNoCodeCopyBtn" data-clipboard-action="copy" data-clipboard-target="#MobileNo" style="display: none"></button>
-                                    <input type="text" class="form-control" id="MobileNo" placeholder="请获取手机号..." data-toggle="tooltip" data-placement="bottom" title="点击自动复制">
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="btn-group">
-                                        <button type="button" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
-                                        <button type="button" id="ReleaseMobileNoBtn" class="btn btn-sm btn-info">释放手机号</button>
-                                        <button type="button" id="addIgnoreMobileNoBtn" class="btn btn-sm btn-warning" title="加入黑名单后将不会再次获取到该号码">加入黑名单</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="SMSContent" class="col-sm-3 control-label">短信内容：</label>
-                                <div class="col-sm-9">
-                                    <textarea class="form-control" id="SMSContent" placeholder="请将获取到的号码填写到你要完成验证的网站或APP，并触发对方发送短信，比如点击对方界面上的“获取验证码”按钮等。"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="VerificationCode" class="col-sm-3 control-label">验证码：</label>
-                                <div class="col-sm-3">
-                                    <button class="btn" id="VerificationCodeCopyBtn" data-clipboard-action="copy" data-clipboard-target="#VerificationCode" style="display: none"></button>
-                                    <input type="text" class="form-control" id="VerificationCode" data-toggle="tooltip" data-placement="bottom" title="点击自动复制" placeholder="验证码">
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="AutoRlease" checked="checked">
-                                            获取短信后自动释放号码
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-3">
-                                </div>
-                                <div class="col-sm-9">
-                                    <div class="btn-group">
-                                        <button type="button" id="GetSMSBtn" class="btn btn-sm btn-success">获取短信</button>
-                                        <button type="button" id="ShowSendSMSBtn" class="btn btn-sm btn-warning" title="使用获取的手机号码将指定内容发送到项目设置的接收号码">发送短信</button>
-                                        <button type="button" class="btn btn-sm btn-primary" id="AssignMobileNoBtn" title="只能指定本平台内的号码">获取指定手机号</button>
-                                        <button type="button" id="ReleaseAllMobileNoBtn" class="btn btn-sm btn-danger" title="释放你的账号获取过的所有号码">释放全部</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="box-footer">
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
-
+        <div class="row cl mt-20">
+            <div class="header col-xs-12 col-sm-12 mb-10">获取短信</div>
+        </div>
     </div>
-
 @endsection
 
 @section('script')
     <script>
+
         $("#brandsignselect").change(function() {
             if ($('#brandsignselect').val()) {
                 //获取项目
@@ -394,12 +273,8 @@
         function clearOptions() {
             $("#ispsignselect option").remove().appendTo();
             $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
-//            $("#ispsignselect option").remove().appendTo();
-//            $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
-//            $("#ispsignselect option").remove().appendTo();
-//            $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
         }
-
+        //一级
         $.ajax({
             type:"post",
             url: "{{route('citySelect')}}",
@@ -417,8 +292,7 @@
                 }
             }
         });
-
-
+        //二级
         $("#area select").change(function() {
             //清空下面两个子下拉列表(option中value值大于0的删除)
             $("#city option:gt(0)").remove();
@@ -445,30 +319,31 @@
             });
         });
 
-        {{--$("#city select").change(function() {--}}
-            {{--//清空下面两个子下拉列表(option中value值大于0的删除)--}}
-            {{--$("#county option:gt(0)").remove();--}}
-            {{--if ($("#city select").val() == 0) {--}}
-                {{--return;//没有选择的就不去调用--}}
-            {{--}--}}
-            {{--$.ajax({--}}
-                {{--type:"post",--}}
-                {{--url: "{{route('citySelect')}}",--}}
-                {{--data:{_token:_token,parent_id:$("#city select").val()},--}}
-                {{--dataType:"json",//指定返回的格式--}}
-                {{--success:function(data){--}}
-                    {{--for(var i=0;i<data.data.length;i++){--}}
-                        {{--var code=data.data[i].code//返回对象的一个属性--}}
-                        {{--var name=data.data[i].name;--}}
-                        {{--var status = '';--}}
-                        {{--if (county && (code == county)) {--}}
-                            {{--status = 'selected="selected"';--}}
-                        {{--}--}}
-                        {{--$("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#county select"));//添加下拉列表--}}
-                    {{--}--}}
-                {{--}--}}
-            {{--});--}}
-        {{--});--}}
+        $("#form-get-mobile").validate({
+            rules:{
+                phonenum:"required",
+                url:"required",
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $(form).ajaxSubmit(function (data) {
+                    // if (data.code != 200) {
+                    //     layer.msg(data.msg,{icon:2,time:1000})
+                    // } else {
+                    //     layer.msg(data.msg,{icon:1,time:1000})
+                    // }
+                });
+                // setTimeout(function () {
+                //     var index = parent.layer.getFrameIndex(window.name);
+                //     // parent.$('.btn-refresh').click();
+                //     parent.window.location.reload();
+                //     parent.layer.close(index);
+                // },1000);
+
+            }
+        });
 
     </script>
 @endsection

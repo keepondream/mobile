@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Common\Common;
 use App\http\Model\Brand;
 use App\http\Model\Project;
+use App\Libraries\Sms51ym\Sms51ym;
+use App\Libraries\Smsmaizi\Smsmaizi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,17 +19,6 @@ class HomeController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-    }
-
-    /**
-     * 产品功能页
-     * @return \Illuminate\Http\Response
-     */
-    public function product()
-    {
-
-        dd(1231);
-        return view('home');
     }
 
     /**
@@ -97,5 +88,11 @@ class HomeController extends Controller
             }
         }
         return response()->json($msg);
+    }
+
+    public function getMobile(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        dd($param);
     }
 }
