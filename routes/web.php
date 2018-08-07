@@ -28,7 +28,9 @@ Route::get('/jump','WelecomeController@jump')->name('jump');
 
 Route::group(['middleware'=>'auth'], function () {
     Route::any('code','HomeController@code')->name('code');
-    Route::post('getisp','HomeController@getisp')->name('getisp');
+    Route::post('getISP','HomeController@getISP')->name('getisp');
+    Route::post('getProject','HomeController@getProject')->name('getProject');
+    Route::post('getCitySelect','HomeController@getCitySelect')->name('getCitySelect');
 });
 
 

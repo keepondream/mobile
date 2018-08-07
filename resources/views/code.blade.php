@@ -25,9 +25,8 @@
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">当前等级:</h3>
-                {{\App\Common\Common::grade($user->grade)['grade']}}
-                <img src="{{\App\Common\Common::grade($user->grade)['img']}}" class="avatar radius size-S" style="border-radius: 0;">
-
+                    <img src="{{\App\Common\Common::grade($user->grade)['img']}}" class="avatar radius size-S" style="border-radius: 0;margin-top: -5px;" title="{{\App\Common\Common::grade($user->grade)['grade']}}">
+                    {{--{{\App\Common\Common::grade($user->grade)['grade']}}--}}
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">可用积分:</h3>
@@ -43,28 +42,63 @@
             <div class="col-md-12">
                 <div class="col-xs-12 col-sm-6">
                     <table class="table table-border table-bg table-bordered table-hover">
-                        <thead>
+                        {{--<thead>--}}
+                        {{--</thead>--}}
+                        <tbody>
                         <tr class="text-c">
                             <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
-                            <th>
+                            <td>
                                 <span class="select-box">
                                     <select class="select" size="1" name="brandsign" id="brandsignselect">
                                         @if(!empty($brand) && (count($brand) > 0))
                                             @foreach($brand as $brandonly)
-                                                <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
+                                            <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
                                             @endforeach
                                         @else
                                             <option value="" selected>--暂未开放--</option>
                                         @endif
                                     </select>
                                 </span>
-                            </th>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
+                        <tr class="text-c">
+                            <th width="20%">项&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目</th>
+                            <td>
+                                <span class="select-box">
+                                    <select class="select" size="1" name="itemid" id="itemid">
+                                        @if(!empty($brand) && (count($brand) > 0))
+                                           <?php
+                                                $tempCountProject = 0;
+                                                if (!empty($brand[0]->sign)) {
+                                                    $brands = \App\http\Model\Brand::where('sign',$brand[0]->sign)->select(['id'])->get();
+                                                    if (count($brands) > 0) {
+                                                       $projects = $brands[0]->projects;
+                                                       if (count($projects) > 0) {
+                                                           foreach ($projects as $project) {
+                                                               if ($project->status == 1) {
+                                                                   $tempCountProject++;
+                                                               }
+                                                               ?>
+                                                               <option value="<?php echo $project->code?>" selected><?php echo $project->name?></option>
+                                                           <?php
+                                                           }
+                                                       }
+                                                    }
+                                                };
+                                                if ($tempCountProject == 0) { ?>
+                                                    <option value="" selected>--暂未开放--</option>
+                                                <?php }
+                                            ?>
+                                        @else
+                                            <option value="" selected>--暂未开放--</option>
+                                        @endif
+                                    </select>
+                                </span>
+                            </td>
+                        </tr>
                         <tr class="text-c">
                             <th width="20%">运 营 商</th>
-                            <th>
+                            <td>
                                 <span class="select-box">
                                     <select class="select" size="1" name="ispsign" id="ispsignselect">
                                         @if(!empty($brand) && (count($brand) > 0))
@@ -80,7 +114,52 @@
                                         @endif
                                     </select>
                                 </span>
-                            </th>
+                            </td>
+                        </tr>
+                        <tr class="text-c">
+                            <th width="20%">归 属 地</th>
+                            <td>
+                                <div class="col-xs-6 col-sm-6" style="padding-left: 0px;padding-right: 0px;" id="area">
+                                    <span class="select-box">
+                                        <select class="select" size="1" name="province" id="ispsignselect1">
+                                            <option value="0" selected>--不限--</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div class="col-xs-6 col-sm-6"  style="padding-left: 10px;padding-right: 0px;" id="city">
+                                    <span class="select-box">
+                                        <select class="select" size="1" name="city" id="ispsignselect1">
+                                            <option value="0" selected>--不限--</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                {{--<div class="col-xs-4 col-sm-4" style="padding-left: 0px;padding-right: 0px;" id="county">--}}
+                                    {{--<span class="select-box">--}}
+                                        {{--<select class="select" size="1" name="ispsign" id="ispsignselect1">--}}
+                                            {{--<option value="0" selected>--不限--</option>--}}
+                                        {{--</select>--}}
+                                    {{--</span>--}}
+                                {{--</div>--}}
+
+                            </td>
+                        </tr>
+                        <tr class="text-c">
+                            <th width="20%">排除号段</th>
+                            <td>
+                                <input type="text" name="ExcludeNo" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-|.]+/,'');}).call(this)" onblur="this.v();">
+                            </td>
+                        </tr>
+                        <tr class="text-c">
+                            <th width="20%">获取数量</th>
+                            <td>
+                                <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && this.value > 10){this.value = ''};}).call(this)" onblur="this.v();">
+                            </td>
+                        </tr>
+                        <tr class="text-c">
+                            <th width="20%"></th>
+                            <td>
+                                <button type="button" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
+                            </td>
                         </tr>
                         <tr class="active"><th>.active</th><td>悬停在行</td></tr>
                         <tr class="success"><th>.success</th><td>成功或积极</td></tr>
@@ -95,6 +174,7 @@
                         </div>
                     </div>
                 </div>
+                {{--右侧区域--}}
                 <div class="col-xs-12 col-sm-6">
                     <div class="box">
                         <div class="box-body">
@@ -263,7 +343,30 @@
     <script>
         $("#brandsignselect").change(function() {
             if ($('#brandsignselect').val()) {
-
+                //获取项目
+                $.ajax({
+                    type:"post",
+                    url:"{{route('getProject')}}",
+                    data:{_token:_token,sign:$("#brandsignselect").val()},
+                    dataType:"json",//指定返回的格式
+                    success:function(data){
+                        if (data.code == 200) {
+                            //清空option
+                            $("#itemid option").remove();
+                            var dataindex = 0;
+                            for(var i=0;i<data.data.length;i++){
+                                if (data.data[i].status == 1) {
+                                    dataindex++;
+                                    $("<option value='"+data.data[i].sign+"'>"+data.data[i].name+"</option>").appendTo($("#itemid"));//添加下拉列表
+                                }
+                            }
+                            if (dataindex == 0) {
+                                $("<option value=''>--暂未开放--</option>").appendTo($("#itemid"));
+                            }
+                        }
+                    }
+                });
+                //获取运营商
                 $.ajax({
                     type:"post",
                     url: "{{route('getisp')}}",
@@ -277,15 +380,95 @@
                                 $("<option value='"+i+"'>"+data.data['isp'][i]+"</option>").appendTo($("#ispsignselect"));//添加下拉列表
                             }
                         }
-
                     }
                 });
             } else {
                 $("#ispsignselect option").remove().appendTo();
-                $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"))
-
+                $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
+                $("#itemid option").remove().appendTo();
+                $("<option value=''>--暂未开放--</option>").appendTo($("#itemid"));
             }
         });
+
+        //清空还原
+        function clearOptions() {
+            $("#ispsignselect option").remove().appendTo();
+            $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
+//            $("#ispsignselect option").remove().appendTo();
+//            $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
+//            $("#ispsignselect option").remove().appendTo();
+//            $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
+        }
+
+        $.ajax({
+            type:"post",
+            url: "{{route('citySelect')}}",
+            data:{_token:_token,parent_id:0},
+            dataType:"json",//指定返回的格式
+            success:function(data){
+                for(var i=0;i<data.data.length;i++){
+                    var code=data.data[i].code//返回对象的一个属性
+                    var name=data.data[i].name;
+                    var status = '';
+                    if (area && (code == area)) {
+                        status = 'selected="selected"';
+                    }
+                    $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#area select"));//添加下拉列表
+                }
+            }
+        });
+
+
+        $("#area select").change(function() {
+            //清空下面两个子下拉列表(option中value值大于0的删除)
+            $("#city option:gt(0)").remove();
+            $("#county option:gt(0)").remove();
+            if ($("#area select").val() == 0) {
+                return;//没有选择的就不去调用
+            }
+            $.ajax({
+                type:"post",
+                url: "{{route('citySelect')}}",
+                data:{_token:_token,parent_id:$("#area select").val()},
+                dataType:"json",//指定返回的格式
+                success:function(data){
+                    for(var i=0;i<data.data.length;i++){
+                        var code=data.data[i].code//返回对象的一个属性
+                        var name=data.data[i].name;
+                        var status = '';
+                        if (city && (code == city)) {
+                            status = 'selected="selected"';
+                        }
+                        $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#city select"));//添加下拉列表
+                    }
+                }
+            });
+        });
+
+        {{--$("#city select").change(function() {--}}
+            {{--//清空下面两个子下拉列表(option中value值大于0的删除)--}}
+            {{--$("#county option:gt(0)").remove();--}}
+            {{--if ($("#city select").val() == 0) {--}}
+                {{--return;//没有选择的就不去调用--}}
+            {{--}--}}
+            {{--$.ajax({--}}
+                {{--type:"post",--}}
+                {{--url: "{{route('citySelect')}}",--}}
+                {{--data:{_token:_token,parent_id:$("#city select").val()},--}}
+                {{--dataType:"json",//指定返回的格式--}}
+                {{--success:function(data){--}}
+                    {{--for(var i=0;i<data.data.length;i++){--}}
+                        {{--var code=data.data[i].code//返回对象的一个属性--}}
+                        {{--var name=data.data[i].name;--}}
+                        {{--var status = '';--}}
+                        {{--if (county && (code == county)) {--}}
+                            {{--status = 'selected="selected"';--}}
+                        {{--}--}}
+                        {{--$("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#county select"));//添加下拉列表--}}
+                    {{--}--}}
+                {{--}--}}
+            {{--});--}}
+        {{--});--}}
 
     </script>
 @endsection

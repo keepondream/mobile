@@ -42,6 +42,7 @@ class HomeController extends Controller
     /**
      * 验证权限功能
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function checkAuth(Request $request)
     {

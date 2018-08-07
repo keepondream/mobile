@@ -24,17 +24,17 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         //过滤获取参数
-        $param = Common::dataCheck($request->input(),false);
+        $param = Common::dataCheck($request->input(), false);
         //获取系统token
         $token = $request->session()->token();
         //验证参数及防治csrf攻击
         if (!empty($param['name']) && !empty($param['password']) && ($param['_token'] == $token)) {
-            $password = md5(md5('pk'.$param['password']));
-            $adminUser = AdminUser::where('name',$param['name'])->where('status',1)->get()->toArray();
+            $password = md5(md5('pk' . $param['password']));
+            $adminUser = AdminUser::where('name', $param['name'])->where('status', 1)->get()->toArray();
             if (!empty($adminUser)) {
                 if ($adminUser[0]['password'] == $password) {
-                    Cookie::queue('adminKey',$adminUser[0]['id'],5);//默认5分钟无操作 需要登录
-                    $request->session()->put('user',$adminUser[0]);
+                    Cookie::queue('adminKey', $adminUser[0]['id'], 5);//默认5分钟无操作 需要登录
+                    $request->session()->put('user', $adminUser[0]);
                     return redirect('admin');
                 }
             }
@@ -45,6 +45,7 @@ class LoginController extends Controller
     /**
      * 退出后台登陆
      * @param Request $request
+     * @return $this
      */
     public function loginOut(Request $request)
     {
@@ -53,3 +54,5 @@ class LoginController extends Controller
         return Redirect('admin/login')->withCookie($cookie);
     }
 }
+
+

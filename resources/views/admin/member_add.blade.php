@@ -65,7 +65,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">所在城市：</label>
                 <div class="col-xs-8 col-sm-9">
-                    <div class="formControls col-xs-4 col-sm-4" style="padding: 0px 5px 0px 0px;"id="area">
+                    <div class="formControls col-xs-4 col-sm-4" style="padding: 0px 5px 0px 0px;" id="area">
                         <span class="select-box">
                             <select class="select" size="1" name="area">
                                 <option value="0">--请选择--</option>

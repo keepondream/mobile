@@ -26,7 +26,7 @@ class Brand extends Model
      */
     public function projects()
     {
-        return $this->hasMany('App\http\Model\Project','id','brand_id');
+        return $this->hasMany('App\http\Model\Project','brand_id','id');
     }
 
 }

@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Common\Common;
 use App\http\Model\Brand;
+use App\http\Model\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * HomeController constructor.
      */
     public function __construct()
     {
@@ -51,7 +50,7 @@ class HomeController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getisp(Request $request)
+    public function getISP(Request $request)
     {
         $param = Common::dataCheck($request->input());
         $msg = Common::jsonOutData(201,'非法请求!~');
@@ -59,6 +58,42 @@ class HomeController extends Controller
             $isp = Common::isp($param['sign']);
             if (!empty($isp)) {
                 $msg = Common::jsonOutData(200,'success',compact('isp'));
+            }
+        }
+        return response()->json($msg);
+    }
+
+    /**
+     * 选择城市 jquery 动态获取
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCitySelect(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $parent_id = $param['parent_id'];
+        $data= Region::where('parent_id',$parent_id)->select(['code','name'])->get()->toArray();
+
+        $msg = Common::jsonOutData(200,'ok',$data);
+        return response()->json($msg);
+    }
+
+    /**
+     * 获取对应平台下的可用项目
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProject(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'非法请求!~');
+        if (!empty($param['sign'])) {
+            $brand = Brand::where('sign',$param['sign'])->select(['id'])->get();
+            if (count($brand) > 0) {
+                $projects = $brand[0]->projects;
+                if (count($projects) > 0) {
+                    $msg = Common::jsonOutData(200,'ok',$projects);
+                }
             }
         }
         return response()->json($msg);
