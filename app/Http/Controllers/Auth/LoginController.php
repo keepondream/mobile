@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Common\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -40,5 +41,23 @@ class LoginController extends Controller
     public function username()
     {
         return 'name';
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        //自定义ajax请求登陆
+        if ($user->status != '1') {
+            $this->logout($request);
+            return response()->json(Common::jsonOutData(201,'该账号已被禁用,请联系客服!~'));
+        } else {
+            return response()->json(Common::jsonOutData(200,'ok!'));
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Common\Common;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -69,6 +71,44 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
 //            'password' => md5(md5('pk'.$data['password'])),
         ]);
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        if (!empty($name = $request->all()['name'])) {
+            //验证用户名是否唯一
+            $oldUsers = User::where('name',$name)->get();
+            if (count($oldUsers) > 0) {
+                return response()->json(Common::jsonOutData(201,'该用户名称已经存在!~'));
+            }
+        }
+        $this->validator($request->all())->validate();
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
+
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        //改动ajax提交
+        return response()->json(Common::jsonOutData(208,'ok'));
     }
 
 }
