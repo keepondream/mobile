@@ -92,7 +92,29 @@ class HomeController extends Controller
 
     public function getMobile(Request $request)
     {
+        /*[
+          "brandsign" => "yima"
+          "itemid" => "7732"
+          "isp" => "3"
+          "province" => "110000"
+          "city" => "110100"
+          "excludeno" => "171.186"
+          "phonenum" => "5"
+        ]*/
         $param = Common::dataCheck($request->input());
-        dd($param);
+        //根据平台调用不同的接口
+        empty($param['brandsign']) && $msg = Common::jsonOutData(201,'请选择正确的品牌!');
+        empty($param['itemid']) && $msg = Common::jsonOutData(201,'请选择正确的项目!');
+        empty($param['phonenum']) && $msg = Common::jsonOutData(201,'请输入获取数量,最大数量为10条!');
+        $smsClass = Common::checkBrand($param['brandsign']);
+        if ($smsClass) {
+            if ($smsClass == '\App\Libraries\Sms51ym\Sms51ym') {
+                $apiModel = new Sms51ym();
+            } elseif ($smsClass == '\App\Libraries\Smsmaizi\Smsmaizi') {
+                $apiModel = new Smsmaizi();
+            }
+            dd($apiModel);
+        }
+        $msg = Common::jsonOutData(201,'品牌暂未开放');
     }
 }

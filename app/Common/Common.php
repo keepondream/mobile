@@ -145,6 +145,26 @@ class Common
     }
 
     /**
+     * 验证品牌平台接口是否存在
+     * @param $sign
+     * @return mixed|string
+     */
+    public static function checkBrand($sign)
+    {
+        if (empty($sign)) {
+            return '';
+        }
+        $arr = [
+            'yima' => '\App\Libraries\Sms51ym\Sms51ym',
+            'maizi' => '\App\Libraries\Smsmaizi\Smsmaizi',
+        ];
+        if (isset($arr[$sign])) {
+            return $arr[$sign];
+        }
+        return '';
+    }
+
+    /**
      * 不同平台的运营商参数
      * @param $sign
      * @return array

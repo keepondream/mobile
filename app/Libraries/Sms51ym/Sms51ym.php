@@ -12,6 +12,7 @@ namespace App\Libraries\Sms51ym;
 class Sms51ym
 {
 
+
     public static function actionIndex()
     {
         return '51ym';

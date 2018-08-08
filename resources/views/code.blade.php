@@ -101,7 +101,7 @@
                             <th width="20%">运 营 商</th>
                             <td>
                                 <span class="select-box">
-                                    <select class="select" size="1" name="isp">
+                                    <select class="select" size="1" name="isp" id="ispsignselect">
                                         @if(!empty($brand) && (count($brand) > 0))
                                             @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
                                                 @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
@@ -134,14 +134,6 @@
                                         </select>
                                     </span>
                                 </div>
-                                {{--<div class="col-xs-4 col-sm-4" style="padding-left: 0px;padding-right: 0px;" id="county">--}}
-                                    {{--<span class="select-box">--}}
-                                        {{--<select class="select" size="1" name="ispsign" id="ispsignselect1">--}}
-                                            {{--<option value="0" selected>--不限--</option>--}}
-                                        {{--</select>--}}
-                                    {{--</span>--}}
-                                {{--</div>--}}
-
                             </td>
                         </tr>
                         <tr class="text-c">
