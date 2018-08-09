@@ -9,36 +9,58 @@
 namespace App\Libraries\Sms51ym;
 
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class Sms51ym
 {
     private $password = '198522';
     private $username = 'Fanleguan';
+    private $baseurl = 'http://api.fxhyd.cn/UserInterface.aspx';
     private $token = '';
 
     protected $client = '';
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client(['base_uri' => $this->baseurl]);
 
-        $token = Cache::get('sms51ymtoken');
+//        $token = Redis::get('sms51ymtoken');
+//        var_dump($token);
+        dd(111);
         if (empty($token)) {
-            dd($this->Token());
+//            Redis::set('sms51ymtoken','111');
+//            dd(Redis::get('sms51ymtoken'));
         } else {
             $this->token = $token;
         }
         dd($token);
     }
 
+    /**
+     * 获取登陆token
+     */
     public function Token()
     {
-        $response = $this->client->request('GET', 'http://api.fxhyd.cn/UserInterface.aspx?action=login&username='.$this->username.'&password='.$this->password);
-        var_dump($response->getStatusCode());
-        var_dump($response->getHeaderLine('content-type'));
-        var_dump($response->getBody()->getContents());
-        exit;
+        $params = [
+            'action' => 'login',
+            'username' => $this->username,
+            'password' => $this->password
+        ];
+        //或者将URL地址中代写action
+        //get请求
+        $response = $this->client->request('GET', $this->baseurl, [
+            'query' => $params
+        ]);
+
+        //post 请求 易码不支持post 获取action
+//        $response = $this->client->request('POST', $this->baseurl, [
+//            'form_params' => $params
+//        ]);
+
+//        var_dump($response->getStatusCode());
+//        var_dump($response->getHeaderLine('content-type'));
+//        var_dump($response->getBody()->getContents());
+//        exit;
         dd($response->getBody());
     }
 
