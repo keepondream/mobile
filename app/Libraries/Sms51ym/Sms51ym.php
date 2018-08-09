@@ -23,16 +23,16 @@ class Sms51ym
     public function __construct()
     {
         $this->client = new Client(['base_uri' => $this->baseurl]);
+//            Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间
 
-//        $token = Redis::get('sms51ymtoken');
-//        var_dump($token);
-        dd(111);
-        if (empty($token)) {
-//            Redis::set('sms51ymtoken','111');
+        $token = Redis::get('sms51ymtoken');
+        dump($token);
+//        if (empty($token)) {
+//            Redis::set('sms51ymtoken','111',10);
 //            dd(Redis::get('sms51ymtoken'));
-        } else {
-            $this->token = $token;
-        }
+//        } else {
+//            $this->token = $token;
+//        }
         dd($token);
     }
 
