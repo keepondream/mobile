@@ -80,7 +80,7 @@
                                                                    $tempCountProject++;
                                                                }
                                                                ?>
-                                                               <option value="<?php echo $project->code?>" selected><?php echo $project->name?></option>
+                                                               <option value="<?php echo $project->sign?>" ><?php echo $project->name?></option>
                                                            <?php
                                                            }
                                                        }
@@ -139,7 +139,7 @@
                         <tr class="text-c">
                             <th width="20%">排除号段</th>
                             <td>
-                                <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-|.]+/,'');}).call(this)" onblur="this.v();">
+                                <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();">
                             </td>
                         </tr>
                         <tr class="text-c">

@@ -239,6 +239,17 @@ class Common
     }
 
     /**
+     * 生成唯一订单号
+     * @return string
+     */
+    public static function orderSn()
+    {
+        //A 代表2018年 依次类推
+        $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+        return $yCode[intval(date('Y')) - 2018] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', rand(0, 99));
+    }
+
+    /**
      * 无限极分类 选择框用
      * @param int $parentId
      * @return array

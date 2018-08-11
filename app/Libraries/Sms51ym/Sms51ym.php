@@ -8,14 +8,15 @@
 
 namespace App\Libraries\Sms51ym;
 
+use App\Common\Common;
 use App\http\Model\MobileLog;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Redis;
 
 class Sms51ym
 {
-    private static $password = '198522';
-    private static $username = 'Fanleguan';
+    private static $password = '';
+    private static $username = '';
     private static $baseurl = 'http://api.fxhyd.cn/UserInterface.aspx';
     private static $token = '';                             //token
     protected static $client = '';                          //guzzle 初始化对象
@@ -25,14 +26,6 @@ class Sms51ym
     public function __construct()
     {
         self::$client = new Client(['base_uri' => self::$baseurl]);
-        Redis::Rpush('a','3');
-
-        var_dump(Redis::lpop('a'));
-        var_dump(Redis::lpop('a'));
-        var_dump(Redis::lpop('a'));
-        var_dump(Redis::lpop('a'));
-
-        exit;
         # Redis使用方法
         //Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间
 
@@ -53,10 +46,10 @@ class Sms51ym
             self::$token = $token;
         }
 
-        //获取账户信息
+        //获取账户信息 并赋值
         self::getUserInfo();
 
-        dd(self::$userInfo);
+        return $this;
     }
 
     /**
@@ -82,6 +75,7 @@ class Sms51ym
                     Redis::set(md5('sms51ymtoken'),$tokenArr[1],'EX',14400);//存储4小时
                     self::$token = $tokenArr[1];
                 } else {
+                    sleep(5);
                     $repetition = $a + 1;
                     self::getToken($repetition);
                 }
@@ -115,10 +109,12 @@ class Sms51ym
                 self::getToken();
             }
         }
+        return self::$userInfo;
     }
 
     /**
      * 获取手机号
+     * @param $type     操作标识类型,给Redis不同的类型处理不同的事情
      * @param $memberid 用户ID
      * @param $orderid  订单ID
      * @param $num      获取总数
@@ -126,8 +122,21 @@ class Sms51ym
      * @param $repetition     重复获取次数
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getMobile($memberid,$orderid,$num,$data,$repetition=0)
+    public static function getMobile($type,$memberid,$orderid,$num,$data,$repetition=0)
     {
+        if ($type == 'yimagetmobile') {
+            $brandname = '易码平台';
+        }
+        //将数据组装用于Redis 和 结果返出
+        $getMobile = [
+            'type' => $type,
+            'orderid' => $orderid,
+            'num' => $num,
+            'memberid' => $memberid,
+            'data' => $data,
+            'repetition' => $repetition + 1
+        ];
+
         //调用60后就放弃调用 就是 300秒
         if ($repetition >= 60) {
             $data = [
@@ -136,11 +145,20 @@ class Sms51ym
                 'num' => $num,
                 'mobile_status' => '2',
                 'get_mobile_time' => time(),
-                'mobile_repetition' => $repetition
+                'mobile_repetition' => $repetition,
+                'brand_name' => $brandname
             ];
             MobileLog::create($data);
-            return '手机号获取失败';
+            return Common::jsonOutData(201,'手机号获取失败',$getMobile);
         }
+
+        //------调试----
+        Redis::Rpush(md5('mobile'),json_encode($getMobile));
+        return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
+        //------结束----
+
+
+
         $params = [
             'action' => 'getmobile',
             'token' => self::$token,
@@ -164,23 +182,17 @@ class Sms51ym
                     'mobile' => $mobile,
                     'mobile_status' => '1',
                     'get_mobile_time' => time(),
-                    'mobile_repetition' => $repetition
+                    'mobile_repetition' => $repetition,
+                    'brand_name' => $brandname
                 ];
                 MobileLog::create($data);
-                return '手机号获取成功';
+                return Common::jsonOutData(200,'手机号获取成功',$getMobile);
             } else {
                 //将用户数据存入redis 定时执行
-                $getMobile = [
-                    'orderid' => $orderid,
-                    'num' => $num,
-                    'memberid' => $memberid,
-                    'data' => $data
-                ];
-                Redis::Rpush('mobile',json_encode($getMobile));
-                return '进入Redis 重新获取手机号';
+                Redis::Rpush(md5('mobile'),json_encode($getMobile));
+                return Common::jsonOutData(202,'获取手机号错误信息'.$res,$getMobile);
             }
         }
-
     }
 
     public static function actionIndex()

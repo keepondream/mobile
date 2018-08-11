@@ -490,9 +490,13 @@
         //启动登录
         var jump = '{{!empty($jump) ? $jump : ''}}';
         if (jump) {
-            setTimeout(function () {
-                modaldemo(1);
-            },500)
+            var loginstatus = '{{\Illuminate\Support\Facades\Route::has('login')}}';
+            if (!loginstatus) {
+                setTimeout(function () {
+                    modaldemo(1);
+                },500);
+            }
+
         }
     });
 </script>

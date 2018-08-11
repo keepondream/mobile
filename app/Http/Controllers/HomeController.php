@@ -106,15 +106,78 @@ class HomeController extends Controller
         empty($param['brandsign']) && $msg = Common::jsonOutData(201,'请选择正确的品牌!');
         empty($param['itemid']) && $msg = Common::jsonOutData(201,'请选择正确的项目!');
         empty($param['phonenum']) && $msg = Common::jsonOutData(201,'请输入获取数量,最大数量为10条!');
-        $smsClass = Common::checkBrand($param['brandsign']);
-        if ($smsClass) {
-            if ($smsClass == '\App\Libraries\Sms51ym\Sms51ym') {
-                $apiModel = new Sms51ym();
-            } elseif ($smsClass == '\App\Libraries\Smsmaizi\Smsmaizi') {
-                $apiModel = new Smsmaizi();
+        // 获取调用平台
+        $brandsign = $param['brandsign'];
+        unset($param['brandsign']);
+        if ($brandsign == 'yima') {
+            //易码平台操作
+
+            //获取并删除多余参数
+            # isp 运营商
+            if (isset($param['isp']) && empty($param['isp'])) {
+                unset($param['isp']);
             }
-            dd($apiModel);
+            # province 省
+            if (isset($param['province']) && empty($param['province'])) {
+                unset($param['province']);
+            }
+            # city 市
+            if (isset($param['city']) && empty($param['city'])) {
+                unset($param['city']);
+            }
+            # 验证排除号的合法性
+            $excludenoStr = '';
+            if (!empty($param['excludeno'])) {
+                $excludenoArr = explode('.',$param['excludeno']);
+                foreach ($excludenoArr as $v) {
+                    if (strlen($v) == 3) {
+                        if (!empty($excludenoStr)) {
+                            $excludenoStr .= '.'.$v;
+                        } else {
+                            $excludenoStr = $v;
+                        }
+                    }
+                }
+            }
+            if (!empty($excludenoStr)) {
+                $param['excludeno'] = $excludenoStr;
+            } else {
+                unset($param['excludeno']);
+            }
+            #获取总数量
+            $phonenum = $param['phonenum'];
+            unset($param['phonenum']);
+            if (!empty($phonenum) && $phonenum > 0) {
+                //生成唯一订单号获取手机号
+                $order_id = Common::orderSn();
+                //验证当前用户积分是否够获取手机号数量;
+                //目前先定制1积分获取依次
+                if (Auth::user()->credit > $phonenum) {
+                    $model = new Sms51ym();
+                    for ($i = 0 ; $i < $phonenum; $i++) {
+                        //编辑平台操作标识
+                        $type = $brandsign.'getmobile';
+                        $res = $model::getMobile($type,Auth::user()->id,$order_id,$phonenum,$param);
+                        dd($res);
+                    }
+                }
+            }
+
+
+
+
+
+
+
+        } elseif ($brandsign == 'maizi') {
+            //麦子平台操作
+
+            //实例化麦子类
+            $apiModel = new Smsmaizi();
+
+        } else {
+            $msg = Common::jsonOutData(201,'品牌暂未开放');
         }
-        $msg = Common::jsonOutData(201,'品牌暂未开放');
+
     }
 }
