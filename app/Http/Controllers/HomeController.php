@@ -90,6 +90,12 @@ class HomeController extends Controller
         return response()->json($msg);
     }
 
+    /**
+     * 获取手机号码 进行扣分 入库 错误处理
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function getMobile(Request $request)
     {
         /*[
@@ -175,11 +181,10 @@ class HomeController extends Controller
                             'order_id' => $order_id,
                             'num' => $phonenum
                         ];
-                        $msg = Common::jsonOutData(200,'正在拼命赶制....数据可能延迟2到3分钟,请您稍作等待!',compact('outdata'));
+                        $msg = Common::jsonOutData(200,'数据加载中....可能会延迟2到3分钟,请您稍作等待!',compact('outdata'));
                     }
                 }
             }
-            return response()->json($msg);
         } elseif ($brandsign == 'maizi') {
             //麦子平台操作
 
@@ -190,5 +195,15 @@ class HomeController extends Controller
             $msg = Common::jsonOutData(201,'品牌暂未开放');
         }
 
+        return response()->json($msg);
+
+    }
+
+    /**
+     * 获取所有订单信息
+     */
+    public function getAllMobildDetail()
+    {
+        echo 111;
     }
 }

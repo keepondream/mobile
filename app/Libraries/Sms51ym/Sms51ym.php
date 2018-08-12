@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms51ym
 {
-    private static $password = '';
-    private static $username = '';
+    private static $password = '198522';
+    private static $username = 'Fanleguan';
     private static $baseurl = 'http://api.fxhyd.cn/UserInterface.aspx';
     private static $token = '';                             //token
     protected static $client = '';                          //guzzle 初始化对象
