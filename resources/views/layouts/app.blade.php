@@ -426,8 +426,7 @@
                     },
                     error: function(XmlHttpRequest, textStatus, errorThrown){
                         modalalertdemo(JSON.parse(XmlHttpRequest.responseText).errors['name'][0]);
-                     }
-
+                    }
                 });
 
             }
@@ -490,13 +489,16 @@
         //启动登录
         var jump = '{{!empty($jump) ? $jump : ''}}';
         if (jump) {
-            var loginstatus = '{{\Illuminate\Support\Facades\Route::has('login')}}';
-            if (!loginstatus) {
+            if (!checkLogin()) {
                 setTimeout(function () {
                     modaldemo(1);
                 },500);
             }
-
+        }
+        //验证登录
+        function checkLogin() {
+            var loginstatus = '{{\Illuminate\Support\Facades\Route::has('login')}}';
+            return loginstatus;
         }
     });
 </script>

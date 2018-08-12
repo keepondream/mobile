@@ -111,7 +111,21 @@ class HomeController extends Controller
         unset($param['brandsign']);
         if ($brandsign == 'yima') {
             //易码平台操作
+            if (!empty($msg)) {
+                return response()->json($msg);
+            }
 
+            #获取总数量
+            $phonenum = $param['phonenum'];
+            unset($param['phonenum']);
+
+            //验证当前用户积分是否够获取手机号数量; ---------------------
+            $credit = (int)Auth::user()->credit;
+            $credit = (int)'';
+            if (($credit - ($phonenum * 10)) < 0) {
+                $msg = Common::jsonOutData(201,'您的可用积分不足!,请联系管理充值.');
+                return response()->json($msg);
+            }
             //获取并删除多余参数
             # isp 运营商
             if (isset($param['isp']) && empty($param['isp'])) {
@@ -144,31 +158,28 @@ class HomeController extends Controller
             } else {
                 unset($param['excludeno']);
             }
-            #获取总数量
-            $phonenum = $param['phonenum'];
-            unset($param['phonenum']);
+
             if (!empty($phonenum) && $phonenum > 0) {
                 //生成唯一订单号获取手机号
                 $order_id = Common::orderSn();
-                //验证当前用户积分是否够获取手机号数量;
                 //目前先定制1积分获取依次
                 if (Auth::user()->credit > $phonenum) {
                     $model = new Sms51ym();
                     for ($i = 0 ; $i < $phonenum; $i++) {
                         //编辑平台操作标识
                         $type = $brandsign.'getmobile';
-                        $res = $model::getMobile($type,Auth::user()->id,$order_id,$phonenum,$param);
-                        dd($res);
+                        ## 在此方法里面手机号获取成功后应立即扣除相应积分
+                        $model::getMobile($type,Auth::user()->id,$order_id,$phonenum,$param);
+                        //组装 订单ID 并返回 在客户端 进行手机号数据调用
+                        $outdata = [
+                            'order_id' => $order_id,
+                            'num' => $phonenum
+                        ];
+                        $msg = Common::jsonOutData(200,'正在拼命赶制....数据可能延迟2到3分钟,请您稍作等待!',compact('outdata'));
                     }
                 }
             }
-
-
-
-
-
-
-
+            return response()->json($msg);
         } elseif ($brandsign == 'maizi') {
             //麦子平台操作
 

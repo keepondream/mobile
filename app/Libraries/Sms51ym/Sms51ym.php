@@ -10,6 +10,7 @@ namespace App\Libraries\Sms51ym;
 
 use App\Common\Common;
 use App\http\Model\MobileLog;
+use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Redis;
 
@@ -151,12 +152,12 @@ class Sms51ym
             MobileLog::create($data);
             return Common::jsonOutData(201,'手机号获取失败',$getMobile);
         }
-
-        //------调试----
-        Redis::Rpush(md5('mobile'),json_encode($getMobile));
-        return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
-        //------结束----
-
+//
+//        //------调试----
+//        Redis::Rpush(md5('mobile'),json_encode($getMobile));
+//        return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
+//        //------结束----
+//
 
 
         $params = [
@@ -186,6 +187,10 @@ class Sms51ym
                     'brand_name' => $brandname
                 ];
                 MobileLog::create($data);
+                //成功获取扣除用户积分 -----------------以后规则待定----------暂时 一条扣10分
+                $userModel = User::find($memberid);
+                $userModel->credit = $userModel->credit - 10;
+                $userModel->save();
                 return Common::jsonOutData(200,'手机号获取成功',$getMobile);
             } else {
                 //将用户数据存入redis 定时执行

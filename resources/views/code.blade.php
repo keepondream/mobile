@@ -45,117 +45,117 @@
                     <form action="{{route('getMobile')}}" method="post" class="form form-horizontal" id="form-get-mobile">
                         @csrf
                         <table class="table table-border table-bg table-bordered table-hover">
-                        <tbody>
-                        <tr class="text-c">
-                            <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
-                            <td>
-                                <span class="select-box">
-                                    <select class="select" size="1" name="brandsign" id="brandsignselect">
-                                        @if(!empty($brand) && (count($brand) > 0))
-                                            @foreach($brand as $brandonly)
-                                            <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
-                                            @endforeach
-                                        @else
-                                            <option value="" selected>--暂未开放--</option>
-                                        @endif
-                                    </select>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%">项&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目</th>
-                            <td>
-                                <span class="select-box">
-                                    <select class="select" size="1" name="itemid" id="itemid">
-                                        @if(!empty($brand) && (count($brand) > 0))
-                                           <?php
-                                                $tempCountProject = 0;
-                                                if (!empty($brand[0]->sign)) {
-                                                    $brands = \App\http\Model\Brand::where('sign',$brand[0]->sign)->select(['id'])->get();
-                                                    if (count($brands) > 0) {
-                                                       $projects = $brands[0]->projects;
-                                                       if (count($projects) > 0) {
-                                                           foreach ($projects as $project) {
-                                                               if ($project->status == 1) {
-                                                                   $tempCountProject++;
-                                                               }
-                                                               ?>
-                                                               <option value="<?php echo $project->sign?>" ><?php echo $project->name?></option>
-                                                           <?php
-                                                           }
-                                                       }
-                                                    }
-                                                };
-                                                if ($tempCountProject == 0) { ?>
-                                                    <option value="" selected>--暂未开放--</option>
-                                                <?php }
-                                            ?>
-                                        @else
-                                            <option value="" selected>--暂未开放--</option>
-                                        @endif
-                                    </select>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%">运 营 商</th>
-                            <td>
-                                <span class="select-box">
-                                    <select class="select" size="1" name="isp" id="ispsignselect">
-                                        @if(!empty($brand) && (count($brand) > 0))
-                                            @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
-                                                @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
-                                                    <option value="{{$ispk}}">{{$ispv}}</option>
+                            <tbody>
+                            <tr class="text-c">
+                                <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
+                                <td>
+                                    <span class="select-box">
+                                        <select class="select" size="1" name="brandsign" id="brandsignselect">
+                                            @if(!empty($brand) && (count($brand) > 0))
+                                                @foreach($brand as $brandonly)
+                                                <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
                                                 @endforeach
                                             @else
                                                 <option value="" selected>--暂未开放--</option>
                                             @endif
-                                        @else
-                                            <option value="" selected>--暂未开放--</option>
-                                        @endif
-                                    </select>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%">归 属 地</th>
-                            <td>
-                                <div class="col-xs-6 col-sm-6" style="padding-left: 0px;padding-right: 0px;" id="area">
-                                    <span class="select-box">
-                                        <select class="select" size="1" name="province">
-                                            <option value="0" selected>--不限--</option>
                                         </select>
                                     </span>
-                                </div>
-                                <div class="col-xs-6 col-sm-6"  style="padding-left: 10px;padding-right: 0px;" id="city">
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">项&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目</th>
+                                <td>
                                     <span class="select-box">
-                                        <select class="select" size="1" name="city">
-                                            <option value="0" selected>--不限--</option>
+                                        <select class="select" size="1" name="itemid" id="itemid">
+                                            @if(!empty($brand) && (count($brand) > 0))
+                                               <?php
+                                                    $tempCountProject = 0;
+                                                    if (!empty($brand[0]->sign)) {
+                                                        $brands = \App\http\Model\Brand::where('sign',$brand[0]->sign)->select(['id'])->get();
+                                                        if (count($brands) > 0) {
+                                                           $projects = $brands[0]->projects;
+                                                           if (count($projects) > 0) {
+                                                               foreach ($projects as $project) {
+                                                                   if ($project->status == 1) {
+                                                                       $tempCountProject++;
+                                                                   }
+                                                                   ?>
+                                                                   <option value="<?php echo $project->sign?>" ><?php echo $project->name?></option>
+                                                               <?php
+                                                               }
+                                                           }
+                                                        }
+                                                    };
+                                                    if ($tempCountProject == 0) { ?>
+                                                        <option value="" selected>--暂未开放--</option>
+                                                    <?php }
+                                                ?>
+                                            @else
+                                                <option value="" selected>--暂未开放--</option>
+                                            @endif
                                         </select>
                                     </span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%">排除号段</th>
-                            <td>
-                                <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();">
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%">获取数量</th>
-                            <td style="position: relative;padding-top: 5px;">
-                                <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();">
-                            </td>
-                        </tr>
-                        <tr class="text-c">
-                            <th width="20%"></th>
-                            <td>
-                                <button type="submit" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">运 营 商</th>
+                                <td>
+                                    <span class="select-box">
+                                        <select class="select" size="1" name="isp" id="ispsignselect">
+                                            @if(!empty($brand) && (count($brand) > 0))
+                                                @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
+                                                    @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
+                                                        <option value="{{$ispk}}">{{$ispv}}</option>
+                                                    @endforeach
+                                                @else
+                                                    <option value="" selected>--暂未开放--</option>
+                                                @endif
+                                            @else
+                                                <option value="" selected>--暂未开放--</option>
+                                            @endif
+                                        </select>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">归 属 地</th>
+                                <td>
+                                    <div class="col-xs-6 col-sm-6" style="padding-left: 0px;padding-right: 0px;" id="area">
+                                        <span class="select-box">
+                                            <select class="select" size="1" name="province">
+                                                <option value="0" selected>--不限--</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6"  style="padding-left: 10px;padding-right: 0px;" id="city">
+                                        <span class="select-box">
+                                            <select class="select" size="1" name="city">
+                                                <option value="0" selected>--不限--</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">排除号段</th>
+                                <td>
+                                    <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();">
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">获取数量</th>
+                                <td style="position: relative;padding-top: 5px;">
+                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();">
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%"></th>
+                                <td>
+                                    <button type="submit" id="GetMobileNoBtn" class="btn btn-sm btn-success">获取手机号</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </form>
                 </div>
                 {{--右侧区域--}}
@@ -205,13 +205,43 @@
         </div>
         <div class="row cl mt-20">
             <div class="header col-xs-12 col-sm-12 mb-10">获取短信</div>
+            <table class="table table-border table-bg table-bordered">
+                <thead>
+                <tr class="text-c">
+                    <th class="col-xs-3 col-sm-3" style="float: none;">手机号码</th>
+                    <th class="col-xs-5 col-sm-5" style="float: none;">短信内容</th>
+                    <th class="col-xs-4 col-sm-4" style="float: none;">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态</th>
+                </tr>
+                </thead>
+                <tbody id="mobile_sms_content">
+                <tr class="text-c active">
+                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
+                    <td class="col-xs-5 col-sm-5" style="float: none;"></td>
+                    <td class="col-xs-4 col-sm-4" style="float: none;">30分钟后将会进行自动释放,请及时使用!</td>
+                </tr>
+                <tr class="text-c success">
+                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
+                    <td class="col-xs-5 col-sm-5" style="float: none;">xxxxxxxxxxxxxxxxxxxxx</td>
+                    <td class="col-xs-4 col-sm-4" style="float: none;">成功!</td>
+                </tr>
+                <tr class="text-c danger">
+                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
+                    <td class="col-xs-5 col-sm-5" style="float: none;"></td>
+                    <td class="col-xs-4 col-sm-4" style="float: none;">获取失败!一个工作日后将会返回消耗积分.</td>
+                </tr>
+                {{--<th>.active</th>--}}
+                {{--<tr class="success"><th>.success</th><td>成功或积极</td></tr>--}}
+                {{--<tr class="warning"><th>.warning</th><td>警告或出错</td></tr>--}}
+                {{--<tr class="danger"><th>.danger</th><td>危险</td></tr>--}}
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection
 
 @section('script')
     <script>
-
+        var mobiletimer = '';
         $("#brandsignselect").change(function() {
             if ($('#brandsignselect').val()) {
                 //获取项目
@@ -266,6 +296,7 @@
             $("#ispsignselect option").remove().appendTo();
             $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
         }
+
         //一级
         $.ajax({
             type:"post",
@@ -284,6 +315,7 @@
                 }
             }
         });
+
         //二级
         $("#area select").change(function() {
             //清空下面两个子下拉列表(option中value值大于0的删除)
@@ -311,6 +343,7 @@
             });
         });
 
+        //提交
         $("#form-get-mobile").validate({
             rules:{
                 phonenum:"required",
@@ -321,12 +354,13 @@
             success:"valid",
             submitHandler:function(form){
                 $(form).ajaxSubmit(function (data) {
-                    // if (data.code != 200) {
-                    //     layer.msg(data.msg,{icon:2,time:1000})
-                    // } else {
-                    //     layer.msg(data.msg,{icon:1,time:1000})
-                    // }
+                    modalalertdemo(data.msg)
+                    if (data.code == 200) {
+                        $('#GetMobileNoBtn').attr('disabled','disabled');
+                        mobiletimer = setInterval(mobile_get(data.data['order_id'],data.data['num']),3000);
+                    }
                 });
+
                 // setTimeout(function () {
                 //     var index = parent.layer.getFrameIndex(window.name);
                 //     // parent.$('.btn-refresh').click();
@@ -337,7 +371,35 @@
             }
         });
 
+        //获取手机号并填充
+        function mobile_get(order_id,num) {
+            console.log(111);
+            //获取订单号详情
+            $.ajax({
+                type:"post",
+                url: "{{route('getAllMobildDetail')}}",
+                data:{_token:_token,order_id:order_id},
+                dataType:"json",//指定返回的格式
+                success:function(data){
+                    console.log(data);
+                    //判断当前的数量是否等于手机号数量且 成功或失败
+                    // for(var i=0;i<data.data.length;i++){
+                    //     var code=data.data[i].code//返回对象的一个属性
+                    //     var name=data.data[i].name;
+                    //     var status = '';
+                    //     if (city && (code == city)) {
+                    //         status = 'selected="selected"';
+                    //     }
+                    //     $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#city select"));//添加下拉列表
+                    // }
+                }
+            });
+
+        }
+
     </script>
 @endsection
+
+
 
 

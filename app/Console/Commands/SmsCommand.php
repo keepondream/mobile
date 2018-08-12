@@ -68,7 +68,6 @@ class SmsCommand extends Command
                         //易码平台获取手机号失败,再次获取,如若失败会再次获取,最大获取60次 后直接终止入库
                         $model = new Sms51ym();
                         $model::getMobile($param['type'],$param['memberid'],$param['orderid'],$param['num'],$param['data'],$param['repetition']);
-                        var_dump($param);
                         break;
                     case 'maizigetmobile':
                         break;
@@ -76,9 +75,10 @@ class SmsCommand extends Command
                         echo "黑洞!".PHP_EOL;
                         break;
                 }
-            } else {
-                echo "没有数据".PHP_EOL;
             }
+//            else {
+//                echo "没有数据".PHP_EOL;
+//            }
 //            //每三秒执行一次
 //            for ($i=1;$i<=20;$i++){
 //                sleep(2);
