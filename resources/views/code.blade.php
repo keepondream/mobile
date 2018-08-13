@@ -21,7 +21,9 @@
             <div class="header col-xs-12 col-sm-12 mb-10">基础信息</div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">会员姓名:</h3>
-                {{$user->name}}
+                <small>
+                    {{$user->name}}
+                </small>
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">当前等级:</h3>
@@ -30,7 +32,9 @@
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
                 <h3 class="label label-secondary radius">可用积分:</h3>
-                {{$user->credit}}
+                <small id="usercredit">
+                    {{$user->credit}}
+                </small>
             </div>
             <div class="col-xs-6 col-sm-3" style="line-height: 18px;font-size: 18px;">
 
@@ -214,20 +218,8 @@
                 </tr>
                 </thead>
                 <tbody id="mobile_sms_content">
-                <tr class="text-c active">
-                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
-                    <td class="col-xs-5 col-sm-5" style="float: none;"></td>
-                    <td class="col-xs-4 col-sm-4" style="float: none;">30分钟后将会进行自动释放,请及时使用!</td>
-                </tr>
-                <tr class="text-c success">
-                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
-                    <td class="col-xs-5 col-sm-5" style="float: none;">xxxxxxxxxxxxxxxxxxxxx</td>
-                    <td class="col-xs-4 col-sm-4" style="float: none;">成功!</td>
-                </tr>
-                <tr class="text-c danger">
-                    <td class="col-xs-3 col-sm-3" style="float: none;">13333333333</td>
-                    <td class="col-xs-5 col-sm-5" style="float: none;"></td>
-                    <td class="col-xs-4 col-sm-4" style="float: none;">获取失败!一个工作日后将会返回消耗积分.</td>
+                <tr class="text-c">
+                    <td class="col-xs-12 col-sm-12" colspan="3" style="float: none;">~~暂无相关数据,请先获取~~</td>
                 </tr>
                 {{--<th>.active</th>--}}
                 {{--<tr class="success"><th>.success</th><td>成功或积极</td></tr>--}}
@@ -242,6 +234,7 @@
 @section('script')
     <script>
         var mobiletimer = '';
+        var mobileindex = 0;
         $("#brandsignselect").change(function() {
             if ($('#brandsignselect').val()) {
                 //获取项目
@@ -357,23 +350,17 @@
                     modalalertdemo(data.msg)
                     if (data.code == 200) {
                         $('#GetMobileNoBtn').attr('disabled','disabled');
-                        mobiletimer = setInterval(mobile_get(data.data['order_id'],data.data['num']),3000);
+                        mobiletimer = window.setInterval(function () {
+                            mobile_get(data.data['order_id'],data.data['num'])
+                        },10000)
                     }
                 });
-
-                // setTimeout(function () {
-                //     var index = parent.layer.getFrameIndex(window.name);
-                //     // parent.$('.btn-refresh').click();
-                //     parent.window.location.reload();
-                //     parent.layer.close(index);
-                // },1000);
-
             }
         });
 
         //获取手机号并填充
         function mobile_get(order_id,num) {
-            console.log(111);
+            mobileindex++;
             //获取订单号详情
             $.ajax({
                 type:"post",
@@ -381,17 +368,43 @@
                 data:{_token:_token,order_id:order_id},
                 dataType:"json",//指定返回的格式
                 success:function(data){
-                    console.log(data);
-                    //判断当前的数量是否等于手机号数量且 成功或失败
-                    // for(var i=0;i<data.data.length;i++){
-                    //     var code=data.data[i].code//返回对象的一个属性
-                    //     var name=data.data[i].name;
-                    //     var status = '';
-                    //     if (city && (code == city)) {
-                    //         status = 'selected="selected"';
-                    //     }
-                    //     $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#city select"));//添加下拉列表
-                    // }
+                    if (data.code == 200) {
+                        if ((data.data['count'] >= num) && (data.data['clear'] == 1)) {
+                            window.clearInterval(mobiletimer);
+                        } else if (mobileindex >= 35) {
+                            window.clearInterval(mobiletimer);
+                        }
+                        //清空
+                        $('#mobile_sms_content').empty();
+                        $('#usercredit').text(data.data['credit']);
+                        var res = data.data['content'];
+                        var str = '';
+                        var tempContent = '';
+                        var tempClass = '';
+                        for (var i = 0; i < res.length; i++) {
+                            if (mobileindex >= 35) {
+                                if (res[i].status == 0) {
+                                    tempContent = '超时未使用,所耗积分将30分钟内返还.';
+                                    tempClass = 'danger';
+                                } else {
+                                    tempContent = res[i].content;
+                                    tempClass = res[i].class;
+                                }
+                                str += '<tr class="text-c '+tempClass+'">' +
+                                    '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
+                                    '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
+                                    '<td class="col-xs-4 col-sm-4" style="float: none;">'+tempContent+'</td>' +
+                                    '</tr>';
+                            } else {
+                                str += '<tr class="text-c '+res[i].class+'">' +
+                                    '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
+                                    '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
+                                    '<td class="col-xs-4 col-sm-4" style="float: none;">'+res[i].content+'</td>' +
+                                    '</tr>';
+                            }
+                        }
+                        $('#mobile_sms_content').append(str);
+                    }
                 }
             });
 

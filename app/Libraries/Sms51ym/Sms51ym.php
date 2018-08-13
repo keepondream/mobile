@@ -26,6 +26,7 @@ class Sms51ym
 
     public function __construct()
     {
+
         self::$client = new Client(['base_uri' => self::$baseurl]);
         # Redis使用方法
         //Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间

@@ -24,7 +24,7 @@ class CreateMobileLogsTable extends Migration
             $table->integer('mobile_repetition')->default('0')->commit('手机号重复获取次数');
             $table->unsignedInteger('get_mobile_time')->default('0')->commit('获取手机号的时间->时间戳');
             $table->string('sms_content')->default('')->commit('短信内容');
-            $table->tinyInteger('is_sms')->default('0')->commit('是否获取短信 0 未获取 1 已获取');
+            $table->tinyInteger('is_sms')->default('0')->commit('是否获取短信 0 未获取 1 已获取 2 获取失败');
             $table->integer('sms_repetition')->default('0')->commit('短信重复获取次数');
             $table->unsignedInteger('get_sms_time')->default('0')->commit('获取短信的时间->时间戳');
             $table->tinyInteger('is_send')->default('0')->commit('是否发送短信 0 未发送 1 已发送 ');

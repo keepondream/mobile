@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Common\Common;
 use App\http\Model\Brand;
+use App\http\Model\MobileLog;
 use App\http\Model\Project;
 use App\Libraries\Sms51ym\Sms51ym;
 use App\Libraries\Smsmaizi\Smsmaizi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
@@ -130,6 +132,11 @@ class HomeController extends Controller
             $credit = (int)'';
             if (($credit - ($phonenum * 10)) < 0) {
                 $msg = Common::jsonOutData(201,'您的可用积分不足!,请联系管理充值.');
+                $outdata = [
+                    'order_id' => 'A812443854903979',
+                    'num' => '3'
+                ];
+                $msg = Common::jsonOutData(200,'数据加载中....可能会延迟2到3分钟,请您稍作等待!',$outdata);
                 return response()->json($msg);
             }
             //获取并删除多余参数
@@ -202,8 +209,55 @@ class HomeController extends Controller
     /**
      * 获取所有订单信息
      */
-    public function getAllMobildDetail()
+    public function getAllMobildDetail(Request $request)
     {
-        echo 111;
+        $param = Common::dataCheck($request->input());
+        if ($request->isMethod('post')) {
+            if (!empty($param['order_id'])) {
+                $outdata = MobileLog::where('order_id',$param['order_id'])->orderBy('id','asc')->get()->toArray();
+                //组装数据
+                $count = count($outdata);
+                $data['count'] = $count;
+                $clear = 1;
+                if ($count > 0) {
+                    foreach ($outdata as $v) {
+                        $tempArr = [];
+                        //根据订单状态组装数据
+                        if ($v['is_sms'] == 1) {
+                            $tempArr['content'] = '短信内容获取成功!';
+                            $tempArr['class'] = 'success';
+                            $tempArr['status'] = 1;     //最终状态 1 已使用 0 未使用
+                        } elseif ($v['is_sms'] == 2) {
+                            $tempArr['content'] = '短信获取失败!,所耗积分将30分钟内返还.';
+                            $tempArr['class'] = 'danger';
+                            $tempArr['status'] = 1;
+                        } else {
+                            //手机区间
+                            if ($v['mobile_status'] == 1) {
+                                $temptime = $v['get_mobile_time'] + 300;
+                                $tempArr['content'] = '手机号获取成功!将于 '.date('H:i:s',$temptime).' 后自动释放,请及时使用.';
+                                $tempArr['class'] = 'warning';
+                                $tempArr['status'] = 0;
+                                $clear = 0;
+                            } elseif ($v['mobile_status'] == 2) {
+                                $tempArr['content'] = '短信获取失败!,所耗积分将30分钟内返还.';
+                                $tempArr['class'] = 'danger';
+                                $tempArr['status'] = 0;
+                                $clear = 0;
+                            }
+                        }
+                        $tempArr['mobile'] = $v['mobile'];
+                        $tempArr['sms_content'] = $v['sms_content'];
+                        $data['content'][] = $tempArr;
+                    }
+                }
+                $data['clear'] = $clear;
+                $data['credit'] = Auth::user()->credit;
+                $msg = Common::jsonOutData(200,'ok',$data);
+                return response()->json($msg);
+            }
+        }
     }
 }
+
+
