@@ -100,15 +100,6 @@ class HomeController extends Controller
      */
     public function getMobile(Request $request)
     {
-        /*[
-          "brandsign" => "yima"
-          "itemid" => "7732"
-          "isp" => "3"
-          "province" => "110000"
-          "city" => "110100"
-          "excludeno" => "171.186"
-          "phonenum" => "5"
-        ]*/
         $param = Common::dataCheck($request->input());
         //根据平台调用不同的接口
         empty($param['brandsign']) && $msg = Common::jsonOutData(201,'请选择正确的品牌!');
@@ -128,15 +119,15 @@ class HomeController extends Controller
             unset($param['phonenum']);
 
             //验证当前用户积分是否够获取手机号数量; ---------------------
-            $credit = (int)Auth::user()->credit;
-            $credit = (int)'';
+            $credit = intval(Auth::user()->credit);
+//            $credit = (int)'';
             if (($credit - ($phonenum * 10)) < 0) {
                 $msg = Common::jsonOutData(201,'您的可用积分不足!,请联系管理充值.');
-                $outdata = [
-                    'order_id' => 'A812443854903979',
-                    'num' => '3'
-                ];
-                $msg = Common::jsonOutData(200,'数据加载中....可能会延迟2到3分钟,请您稍作等待!',$outdata);
+//                $outdata = [
+//                    'order_id' => 'A812443854903979',
+//                    'num' => '3'
+//                ];
+//                $msg = Common::jsonOutData(200,'正在拼命加载中....请您稍作等待!',$outdata);
                 return response()->json($msg);
             }
             //获取并删除多余参数
@@ -175,23 +166,22 @@ class HomeController extends Controller
             if (!empty($phonenum) && $phonenum > 0) {
                 //生成唯一订单号获取手机号
                 $order_id = Common::orderSn();
-                //目前先定制1积分获取依次
-                if (Auth::user()->credit > $phonenum) {
-                    $model = new Sms51ym();
-                    for ($i = 0 ; $i < $phonenum; $i++) {
-                        //编辑平台操作标识
-                        $type = $brandsign.'getmobile';
-                        ## 在此方法里面手机号获取成功后应立即扣除相应积分
-                        $model::getMobile($type,Auth::user()->id,$order_id,$phonenum,$param);
-                        //组装 订单ID 并返回 在客户端 进行手机号数据调用
-                        $outdata = [
-                            'order_id' => $order_id,
-                            'num' => $phonenum
-                        ];
-                        $msg = Common::jsonOutData(200,'数据加载中....可能会延迟2到3分钟,请您稍作等待!',compact('outdata'));
-                    }
+                $model = new Sms51ym();
+                for ($i = 0 ; $i < $phonenum; $i++) {
+                    //编辑平台操作标识
+                    ## 在此方法里面手机号获取成功后应立即扣除相应积分
+                    $model::getMobile($brandsign,Auth::user()->id,$order_id,$phonenum,$param);
+                    //如果获取多条,每条等待2秒
+//                    sleep(2);
                 }
+                //组装 订单ID 并返回 在客户端 进行手机号数据调用
+                $outdata = [
+                    'order_id' => $order_id,
+                    'num' => $phonenum
+                ];
+                $msg = Common::jsonOutData(200,'正在拼命加载中....请您稍作等待!',$outdata);
             }
+
         } elseif ($brandsign == 'maizi') {
             //麦子平台操作
 
@@ -222,7 +212,7 @@ class HomeController extends Controller
                 if ($count > 0) {
                     foreach ($outdata as $v) {
                         $tempArr = [];
-                        //根据订单状态组装数据
+                        //根据订单状态组装数据 短信内容区间
                         if ($v['is_sms'] == 1) {
                             $tempArr['content'] = '短信内容获取成功!';
                             $tempArr['class'] = 'success';
@@ -232,7 +222,7 @@ class HomeController extends Controller
                             $tempArr['class'] = 'danger';
                             $tempArr['status'] = 1;
                         } else {
-                            //手机区间
+                            //手机号码区间
                             if ($v['mobile_status'] == 1) {
                                 $temptime = $v['get_mobile_time'] + 300;
                                 $tempArr['content'] = '手机号获取成功!将于 '.date('H:i:s',$temptime).' 后自动释放,请及时使用.';
@@ -240,7 +230,7 @@ class HomeController extends Controller
                                 $tempArr['status'] = 0;
                                 $clear = 0;
                             } elseif ($v['mobile_status'] == 2) {
-                                $tempArr['content'] = '短信获取失败!,所耗积分将30分钟内返还.';
+                                $tempArr['content'] = '手机号获取失败!不会消耗积分!';
                                 $tempArr['class'] = 'danger';
                                 $tempArr['status'] = 0;
                                 $clear = 0;

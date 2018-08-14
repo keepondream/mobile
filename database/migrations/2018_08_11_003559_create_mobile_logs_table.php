@@ -16,7 +16,8 @@ class CreateMobileLogsTable extends Migration
         Schema::create('mobile_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->index()->default('0')->commit('用户ID');
-            $table->string('brand_name')->default('')->commit('获取手机号使用的平台');
+            $table->string('brand_type')->default('')->commit('获取手机号使用的平台类型标识,这里在定时任务切换接口用');
+            $table->string('itemid')->default('')->commit('平台项目编号');
             $table->string('order_id')->default('')->index()->commit('获取手机号时的订单ID');
             $table->unsignedInteger('num')->default('0')->commit('当前订单批次获取手机号的总数量');
             $table->string('mobile')->default('')->commit('获取的手机号码');

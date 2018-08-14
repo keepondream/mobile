@@ -347,12 +347,12 @@
             success:"valid",
             submitHandler:function(form){
                 $(form).ajaxSubmit(function (data) {
-                    modalalertdemo(data.msg)
+                    modalalertdemo(data.msg);
                     if (data.code == 200) {
                         $('#GetMobileNoBtn').attr('disabled','disabled');
                         mobiletimer = window.setInterval(function () {
                             mobile_get(data.data['order_id'],data.data['num'])
-                        },10000)
+                        },5000)
                     }
                 });
             }
@@ -371,7 +371,7 @@
                     if (data.code == 200) {
                         if ((data.data['count'] >= num) && (data.data['clear'] == 1)) {
                             window.clearInterval(mobiletimer);
-                        } else if (mobileindex >= 35) {
+                        } else if (mobileindex >= 70) {
                             window.clearInterval(mobiletimer);
                         }
                         //清空
@@ -382,7 +382,7 @@
                         var tempContent = '';
                         var tempClass = '';
                         for (var i = 0; i < res.length; i++) {
-                            if (mobileindex >= 35) {
+                            if (mobileindex >= 70) {
                                 if (res[i].status == 0) {
                                     tempContent = '超时未使用,所耗积分将30分钟内返还.';
                                     tempClass = 'danger';

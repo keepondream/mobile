@@ -2,7 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\SmsCommand;
+use App\Console\Commands\Sms;
+use App\Console\Commands\SmsBackCredit;
+use App\Console\Commands\SmsMobile;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,8 +16,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
-        SmsCommand::class,
+        Sms::class,
+        SmsMobile::class,
+        SmsBackCredit::class,
     ];
 
     /**
@@ -43,11 +46,20 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        # 执行手机号调度程序
+        # 执行手机号获取失败后的 循环获取程序,并入口记录 成功自动扣分
         $schedule->command('smsmobile')
             ->everyMinute()
             ->sendOutputTo('./crontab.log');
-//            ->emailOutputTo('402314889@qq.com');
+
+        $schedule->command('sms')
+            ->everyMinute()
+            ->sendOutputTo('./smscrontab.log');
+//            ->appendOutputTo('./smscrontab.log');
+
+        $schedule->command('credit')
+            ->everyMinute()
+            ->sendOutputTo('./smsbackcreditcrontab.log');
+//            ->appendOutputTo('./smsbackcreditcrontab.log');
     }
 
     /**

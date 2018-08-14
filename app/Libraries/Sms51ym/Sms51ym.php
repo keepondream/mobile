@@ -126,9 +126,7 @@ class Sms51ym
      */
     public static function getMobile($type,$memberid,$orderid,$num,$data,$repetition=0)
     {
-        if ($type == 'yimagetmobile') {
-            $brandname = '易码平台';
-        }
+
         //将数据组装用于Redis 和 结果返出
         $getMobile = [
             'type' => $type,
@@ -139,16 +137,17 @@ class Sms51ym
             'repetition' => $repetition + 1
         ];
 
-        //调用60后就放弃调用 就是 300秒
-        if ($repetition >= 60) {
+        //调用12次后就放弃调用 手机号码获取2分钟获取不到则定义失败
+        if ($repetition >= 12) {
             $data = [
                 'user_id' => $memberid,
                 'order_id' => $orderid,
+                'brand_type' => $type,
+                'itemid' => $data['itemid'],
                 'num' => $num,
                 'mobile_status' => '2',
                 'get_mobile_time' => time(),
-                'mobile_repetition' => $repetition,
-                'brand_name' => $brandname
+                'mobile_repetition' => $repetition
             ];
             MobileLog::create($data);
             return Common::jsonOutData(201,'手机号获取失败',$getMobile);
@@ -180,12 +179,13 @@ class Sms51ym
                 $data = [
                     'user_id' => $memberid,
                     'order_id' => $orderid,
+                    'brand_type' => $type,
+                    'itemid' => $data['itemid'],
                     'num' => $num,
                     'mobile' => $mobile,
                     'mobile_status' => '1',
                     'get_mobile_time' => time(),
-                    'mobile_repetition' => $repetition,
-                    'brand_name' => $brandname
+                    'mobile_repetition' => $repetition
                 ];
                 MobileLog::create($data);
                 //成功获取扣除用户积分 -----------------以后规则待定----------暂时 一条扣10分
@@ -194,16 +194,96 @@ class Sms51ym
                 $userModel->save();
                 return Common::jsonOutData(200,'手机号获取成功',$getMobile);
             } else {
+                //失败则将继续获取 一直获取 重复次数达到 12 次 则确定获取失败
                 //将用户数据存入redis 定时执行
                 Redis::Rpush(md5('mobile'),json_encode($getMobile));
-                return Common::jsonOutData(202,'获取手机号错误信息'.$res,$getMobile);
+                return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
             }
         }
     }
 
-    public static function actionIndex()
+    /**
+     * 获取短信内容
+     * @param $data 由定时任务那传来的需要获取短信内容的心思
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function getSms($data)
     {
-        return '51ym';
+        $param = [
+            'action' => 'getsms',
+            'token' => self::$token,
+            'itemid' => $data['itemid'],
+            'mobile' => $data['mobile'],
+            'release' => 1      //若该参数值为1时，获取到短信的同时系统将自己释放该手机号码。若要继续使用该号码，请勿带入该参数。
+            // getsendno  是否返回发送号码  若该参数值为1时，则将短信发送号码附加在短信最后用#分隔。
+        ];
+        $time = $data['get_mobile_time'] + 300;
+
+        $model = MobileLog::find($data['id']);
+        if (time() > $time) {
+            //视为短信获取失败
+            $model->sms_content = '短信获取超时!';
+            $model->is_sms = 2;
+//            $model->is_block = self::addignore($data['itemid'],$data['mobile']);
+            $model->is_release = 1;
+            $model->get_sms_time = time();
+            $model->save();
+        } else {
+            //获取短信内容
+            $response = self::$client->request('GET', self::$baseurl, [
+                'query' => $param
+            ]);
+            $res = $response->getBody()->getContents();
+            if (!empty($res)) {
+                $mobileArr = explode('|', $res);
+                if (!empty($mobileArr[0]) && $mobileArr[0] == 'success') {
+                    $sms_content = $mobileArr[1];
+                    $model->sms_content = $sms_content;
+                    $model->is_sms = 1;
+                    $model->is_release = 1;
+                    $model->get_sms_time = time();
+                    $model->save();
+                    return Common::jsonOutData(200,'短信内容获取成功!');
+                }
+//                else {
+//                    //失败将该手机号拉黑
+//                    $model->sms_content = '短信获取失败!';
+//                    $model->is_sms = 2;
+//                    $model->is_block = self::addignore($data['itemid'],$data['mobile']);
+//                    $model->is_release = 1;
+//                    $model->get_sms_time = time();
+//                    $model->save();
+//                    return Common::jsonOutData(202,'获取短信内容失败!~'.$res);
+//                }
+            }
+        }
+    }
+
+    /**
+     * 拉黑手机号
+     * @param $itemid   项目ID
+     * @param $mobile   手机号
+     * @return int      1 成功  2 失败
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function addignore($itemid,$mobile)
+    {
+        $param = [
+            'action' => 'addignore',
+            'token' => self::$token,
+            'itemid' => $itemid,
+            'mobile' => $mobile,
+        ];
+        $response = self::$client->request('GET', self::$baseurl, [
+            'query' => $param
+        ]);
+        $res = $response->getBody()->getContents();
+        if ($res == 'success') {
+            return 1;
+        } else {
+            return 2;
+        }
     }
 
 }
