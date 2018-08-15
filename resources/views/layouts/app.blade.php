@@ -269,7 +269,7 @@
         addClass(document.getElementById('huodongmsg'), 'label-danger');
         addClass(document.getElementById('huodongmsg'), 'radius');
         huadongstatus = '';
-    }
+    };
 
     //登陆注册弹窗
     function modaldemo(status){

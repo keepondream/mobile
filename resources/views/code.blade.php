@@ -149,7 +149,7 @@
                             <tr class="text-c">
                                 <th width="20%">获取数量</th>
                                 <td style="position: relative;padding-top: 5px;">
-                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();">
+                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();" value="1">
                                 </td>
                             </tr>
                             <tr class="text-c">
@@ -221,12 +221,41 @@
                 <tr class="text-c">
                     <td class="col-xs-12 col-sm-12" colspan="3" style="float: none;">~~暂无相关数据,请先获取~~</td>
                 </tr>
-                {{--<th>.active</th>--}}
-                {{--<tr class="success"><th>.success</th><td>成功或积极</td></tr>--}}
-                {{--<tr class="warning"><th>.warning</th><td>警告或出错</td></tr>--}}
-                {{--<tr class="danger"><th>.danger</th><td>危险</td></tr>--}}
                 </tbody>
             </table>
+        </div>
+        <div class="row cl mt-20">
+            <div class="panel panel-default mt-20">
+                <div class="panel-header selected">消费记录</div>
+                <div class="panel-body" style="display: block;">
+                    <table class="table table-border table-bordered table-bg">
+                        <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>手机号</th>
+                            <th>短信内容</th>
+                            <th>消费状态</th>
+                            <th>消费时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(!empty($model) && (count($model) > 0))
+                            @foreach($model as $value)
+                                <tr>
+                                    <td><code>{{$value->order_id}}</code></td>
+                                    <td><code>{{$value->mobile}}</code></td>
+                                    <td><code>{{$value->sms_content}}</code></td>
+                                    <td><span class="label {{$value->is_sms == 1 ? 'label-success' : 'label-danger'}} radius">{{$value->is_sms == 1 ? '已消费' : '未消费'}}</span></td>
+                                    <td>{{$value->created_at}}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection
@@ -349,7 +378,10 @@
                 $(form).ajaxSubmit(function (data) {
                     modalalertdemo(data.msg);
                     if (data.code == 200) {
-                        $('#GetMobileNoBtn').attr('disabled','disabled');
+                        var tr = $('#GetMobileNoBtn').parent();
+                        $('#GetMobileNoBtn').remove();
+                        var str = '<button class="btn btn-sm btn-danger" onclick="window.location.reload()">刷新页面</button>';
+                        tr.append(str);
                         mobiletimer = window.setInterval(function () {
                             mobile_get(data.data['order_id'],data.data['num'])
                         },5000)

@@ -34,6 +34,8 @@ class HomeController extends Controller
         $data['categoryUrl'] = 'code';//当前导航url
         $data['user'] = Auth::user();
         $data['brand'] = Brand::where('status','1')->orderBy('sort','ASC')->orderBy('id','ASC')->get();
+        //获取最近的消费记录
+        $data['model'] = MobileLog::where('user_id',Auth::id())->orderBy('get_mobile_time','desc')->limit(20)->get();
         return view('code',$data);
 
     }
