@@ -33,6 +33,15 @@ class HomeController extends Controller
         $data['categorys'] = $this->category;//导航
         $data['categoryUrl'] = 'code';//当前导航url
         $data['user'] = Auth::user();
+        //Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间
+        $data['brandval'] = Redis::get(md5('code'.Auth::id().'brandval'));
+        $data['itemidval'] = Redis::get(md5('code'.Auth::id().'itemidval'));
+        $data['phonenumval'] = Redis::get(md5('code'.Auth::id().'phonenumval'));
+        $data['ispval'] = Redis::get(md5('code'.Auth::id().'ispval'));
+        $data['provinceval'] = Redis::get(md5('code'.Auth::id().'provinceval'));
+        $data['cityval'] = Redis::get(md5('code'.Auth::id().'cityval'));
+        $data['excludenoval'] = Redis::get(md5('code'.Auth::id().'excludenoval'));
+
         $data['brand'] = Brand::where('status','1')->orderBy('sort','ASC')->orderBy('id','ASC')->get();
         //获取最近的消费记录
         $data['model'] = MobileLog::where('user_id',Auth::id())->orderBy('get_mobile_time','desc')->limit(20)->get();
@@ -107,6 +116,11 @@ class HomeController extends Controller
         empty($param['brandsign']) && $msg = Common::jsonOutData(201,'请选择正确的品牌!');
         empty($param['itemid']) && $msg = Common::jsonOutData(201,'请选择正确的项目!');
         empty($param['phonenum']) && $msg = Common::jsonOutData(201,'请输入获取数量,最大数量为10条!');
+        //设置选择品牌
+        Redis::set(md5('code'.Auth::id().'brandval'),$param['brandsign'],'EX',86400);
+        Redis::set(md5('code'.Auth::id().'itemidval'),$param['itemid'],'EX',86400);
+        Redis::set(md5('code'.Auth::id().'phonenumval'),$param['phonenum'],'EX',86400);
+
         // 获取调用平台
         $brandsign = $param['brandsign'];
         unset($param['brandsign']);
@@ -135,15 +149,24 @@ class HomeController extends Controller
             //获取并删除多余参数
             # isp 运营商
             if (isset($param['isp']) && empty($param['isp'])) {
+                Redis::set(md5('code'.Auth::id().'ispval'),'','EX',86400);
                 unset($param['isp']);
+            } else {
+                Redis::set(md5('code'.Auth::id().'ispval'),$param['isp'],'EX',86400);
             }
             # province 省
             if (isset($param['province']) && empty($param['province'])) {
+                Redis::set(md5('code'.Auth::id().'provinceval'),'','EX',86400);
                 unset($param['province']);
+            } else {
+                Redis::set(md5('code'.Auth::id().'provinceval'),$param['province'],'EX',86400);
             }
             # city 市
             if (isset($param['city']) && empty($param['city'])) {
+                Redis::set(md5('code'.Auth::id().'cityval'),'','EX',86400);
                 unset($param['city']);
+            } else {
+                Redis::set(md5('code'.Auth::id().'cityval'),$param['city'],'EX',86400);
             }
             # 验证排除号的合法性
             $excludenoStr = '';
@@ -161,7 +184,10 @@ class HomeController extends Controller
             }
             if (!empty($excludenoStr)) {
                 $param['excludeno'] = $excludenoStr;
+                Redis::set(md5('code'.Auth::id().'excludenoval'),$param['excludeno'],'EX',86400);
+
             } else {
+                Redis::set(md5('code'.Auth::id().'excludenoval'),'','EX',86400);
                 unset($param['excludeno']);
             }
 
@@ -193,6 +219,8 @@ class HomeController extends Controller
         } else {
             $msg = Common::jsonOutData(201,'品牌暂未开放');
         }
+
+
 
         return response()->json($msg);
 

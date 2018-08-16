@@ -57,7 +57,11 @@
                                         <select class="select" size="1" name="brandsign" id="brandsignselect">
                                             @if(!empty($brand) && (count($brand) > 0))
                                                 @foreach($brand as $brandonly)
-                                                <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
+                                                    @if(!empty($brandval) && ($brandval == $brandonly->sign))
+                                                        <option value="{{$brandonly->sign}}" selected="selected">{{$brandonly->name}}</option>
+                                                    @else
+                                                        <option value="{{$brandonly->sign}}">{{$brandonly->name}}</option>
+                                                    @endif
                                                 @endforeach
                                             @else
                                                 <option value="" selected>--暂未开放--</option>
@@ -72,22 +76,29 @@
                                     <span class="select-box">
                                         <select class="select" size="1" name="itemid" id="itemid">
                                             @if(!empty($brand) && (count($brand) > 0))
-                                               <?php
+                                                <?php
                                                     $tempCountProject = 0;
-                                                    if (!empty($brand[0]->sign)) {
-                                                        $brands = \App\http\Model\Brand::where('sign',$brand[0]->sign)->select(['id'])->get();
+                                                    if (!empty($brand[0]->sign) || !empty($brandval)) {
+                                                        if (!empty($brandval)) {
+                                                            $brands = \App\http\Model\Brand::where('sign',$brandval)->select(['id'])->get();
+                                                        } else {
+                                                            $brands = \App\http\Model\Brand::where('sign',$brand[0]->sign)->select(['id'])->get();
+                                                        }
                                                         if (count($brands) > 0) {
-                                                           $projects = $brands[0]->projects;
-                                                           if (count($projects) > 0) {
-                                                               foreach ($projects as $project) {
-                                                                   if ($project->status == 1) {
+                                                            $projects = $brands[0]->projects;
+                                                            if (count($projects) > 0) {
+                                                                foreach ($projects as $project) {
+                                                                    if ($project->status == 1) {
                                                                        $tempCountProject++;
-                                                                   }
-                                                                   ?>
-                                                                   <option value="<?php echo $project->sign?>" ><?php echo $project->name?></option>
-                                                               <?php
-                                                               }
-                                                           }
+                                                                    } ?>
+                                                                    <?php if (!empty($itemidval) && ($itemidval == $project->sign)) { ?>
+                                                                        <option value="<?php echo $project->sign?>" selected="selected"><?php echo $project->name?></option>
+                                                                    <?php } else { ?>
+                                                                        <option value="<?php echo $project->sign?>" ><?php echo $project->name?></option>
+
+                                                                    <?php } ?>
+                                                               <?php }
+                                                            }
                                                         }
                                                     };
                                                     if ($tempCountProject == 0) { ?>
@@ -107,9 +118,13 @@
                                     <span class="select-box">
                                         <select class="select" size="1" name="isp" id="ispsignselect">
                                             @if(!empty($brand) && (count($brand) > 0))
-                                                @if(!empty($brand[0]->sign) && (count(\App\Common\Common::isp($brand[0]->sign)) > 0))
-                                                    @foreach(\App\Common\Common::isp($brand[0]->sign) as $ispk => $ispv)
-                                                        <option value="{{$ispk}}">{{$ispv}}</option>
+                                                @if((!empty($brand[0]->sign) || !empty($brandval)) && (count(\App\Common\Common::isp((!empty($brandval) ? $brandval : $brand[0]->sign))) > 0))
+                                                    @foreach(\App\Common\Common::isp((!empty($brandval) ? $brandval : $brand[0]->sign)) as $ispk => $ispv)
+                                                        @if(!empty($ispval) && ($ispval == $ispk))
+                                                            <option value="{{$ispk}}" selected="selected">{{$ispv}}</option>
+                                                        @else
+                                                            <option value="{{$ispk}}">{{$ispv}}</option>
+                                                        @endif
                                                     @endforeach
                                                 @else
                                                     <option value="" selected>--暂未开放--</option>
@@ -128,6 +143,16 @@
                                         <span class="select-box">
                                             <select class="select" size="1" name="province">
                                                 <option value="0" selected>--不限--</option>
+                                                <?php if (!empty($provinceval)) {
+                                                    $tempProvinces = \App\http\Model\Region::where('parent_id',0)->select(['code','name'])->get()->toArray();
+                                                    foreach ($tempProvinces as $tempProvince) {
+                                                        if ($provinceval == $tempProvince['code']) { ?>
+                                                            <option value="<?php echo $tempProvince['code']?>" selected="selected"><?php echo $tempProvince['name']?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $tempProvince['code']?>" ><?php echo $tempProvince['name']?></option>
+                                                        <?php }
+                                                    }
+                                                }?>
                                             </select>
                                         </span>
                                     </div>
@@ -135,6 +160,16 @@
                                         <span class="select-box">
                                             <select class="select" size="1" name="city">
                                                 <option value="0" selected>--不限--</option>
+                                                <?php if (!empty($provinceval) && !empty($cityval)) {
+                                                $tempCitys = \App\http\Model\Region::where('parent_id',$provinceval)->select(['code','name'])->get()->toArray();
+                                                foreach ($tempCitys as $tempCity) {
+                                                if ($cityval == $tempCity['code']) { ?>
+                                                <option value="<?php echo $tempCity['code']?>" selected="selected"><?php echo $tempCity['name']?></option>
+                                                <?php } else { ?>
+                                                <option value="<?php echo $tempCity['code']?>" ><?php echo $tempCity['name']?></option>
+                                                <?php }
+                                                }
+                                                }?>
                                             </select>
                                         </span>
                                     </div>
@@ -143,13 +178,13 @@
                             <tr class="text-c">
                                 <th width="20%">排除号段</th>
                                 <td>
-                                    <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();">
+                                    <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();" value="{{!empty($excludenoval) ? $excludenoval : ''}}">
                                 </td>
                             </tr>
                             <tr class="text-c">
                                 <th width="20%">获取数量</th>
                                 <td style="position: relative;padding-top: 5px;">
-                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();" value="1">
+                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();" value="{{!empty($phonenum) ? $phonenum : '1'}}">
                                 </td>
                             </tr>
                             <tr class="text-c">
@@ -319,24 +354,29 @@
             $("<option value=''>--暂未开放--</option>").appendTo($("#ispsignselect"));
         }
 
-        //一级
-        $.ajax({
-            type:"post",
-            url: "{{route('citySelect')}}",
-            data:{_token:_token,parent_id:0},
-            dataType:"json",//指定返回的格式
-            success:function(data){
-                for(var i=0;i<data.data.length;i++){
-                    var code=data.data[i].code//返回对象的一个属性
-                    var name=data.data[i].name;
-                    var status = '';
-                    if (area && (code == area)) {
-                        status = 'selected="selected"';
+        var tempRedisProvince = '<?php echo !empty($provinceval) ? $provinceval : '';?>';
+
+        if (!tempRedisProvince) {
+            //一级
+            $.ajax({
+                type:"post",
+                url: "{{route('citySelect')}}",
+                data:{_token:_token,parent_id:0},
+                dataType:"json",//指定返回的格式
+                success:function(data){
+                    for(var i=0;i<data.data.length;i++){
+                        var code=data.data[i].code//返回对象的一个属性
+                        var name=data.data[i].name;
+                        var status = '';
+                        if (area && (code == area)) {
+                            status = 'selected="selected"';
+                        }
+                        $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#area select"));//添加下拉列表
                     }
-                    $("<option value='"+code+"' "+status+">"+name+"</option>").appendTo($("#area select"));//添加下拉列表
                 }
-            }
-        });
+            });
+        }
+
 
         //二级
         $("#area select").change(function() {
