@@ -184,7 +184,7 @@
                             <tr class="text-c">
                                 <th width="20%">获取数量</th>
                                 <td style="position: relative;padding-top: 5px;">
-                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();" value="{{!empty($phonenum) ? $phonenum : '1'}}">
+                                    <input type="text" name="phonenum" placeholder=" 最大获取10条" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');if(this.value && (this.value > 10 || this.value == 0)){this.value = ''};}).call(this)" onblur="this.v();" value="{{!empty($phonenumval) ? $phonenumval : '1'}}">
                                 </td>
                             </tr>
                             <tr class="text-c">
