@@ -380,10 +380,13 @@
                     if (data.code == 200) {
                         var tr = $('#GetMobileNoBtn').parent();
                         $('#GetMobileNoBtn').remove();
-                        var str = '<button class="btn btn-sm btn-danger" onclick="window.location.reload()">刷新页面</button>';
+                        var str = '<a href="javascript:;" class="btn btn-sm btn-danger" onclick="window.location.reload()">刷新页面</a>';
                         tr.append(str);
+                        //立即执行
+                        mobile_get(data.data['order_id'],data.data['num']);
+                        //定时执行
                         mobiletimer = window.setInterval(function () {
-                            mobile_get(data.data['order_id'],data.data['num'])
+                            mobile_get(data.data['order_id'],data.data['num']);
                         },5000)
                     }
                 });
@@ -416,7 +419,7 @@
                         for (var i = 0; i < res.length; i++) {
                             if (mobileindex >= 70) {
                                 if (res[i].status == 0) {
-                                    tempContent = '超时未使用,所耗积分将30分钟内返还.';
+                                    tempContent = '超时未使用,所耗积分将5分钟内返还.';
                                     tempClass = 'danger';
                                 } else {
                                     tempContent = res[i].content;
