@@ -171,6 +171,7 @@ class HomeController extends Controller
             # 指定号码
             if (isset($param['mobile']) && empty($param['mobile'])) {
                 unset($param['mobile']);
+            } else {
                 $phonenum = 1;
             }
             # 验证排除号的合法性
