@@ -168,6 +168,11 @@ class HomeController extends Controller
             } else {
                 Redis::set(md5('code'.Auth::id().'cityval'),$param['city'],'EX',86400);
             }
+            # 指定号码
+            if (isset($param['mobile']) && empty($param['mobile'])) {
+                unset($param['mobile']);
+                $phonenum = 1;
+            }
             # 验证排除号的合法性
             $excludenoStr = '';
             if (!empty($param['excludeno'])) {
@@ -268,6 +273,8 @@ class HomeController extends Controller
                         }
                         $tempArr['mobile'] = $v['mobile'];
                         $tempArr['sms_content'] = $v['sms_content'];
+                        $tempArr['id'] = $v['id'];
+                        $tempArr['isblock'] = $v['is_block'];
                         $data['content'][] = $tempArr;
                     }
                 }
@@ -277,6 +284,25 @@ class HomeController extends Controller
                 return response()->json($msg);
             }
         }
+    }
+
+    /**
+     * 手机号码拉黑 进Redis
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function mobileBlock(Request $request)
+    {
+        $param = Common::dataCheck($request->input());
+        $msg = Common::jsonOutData(201,'拉黑失败!~');
+        if ($request->isMethod('post')) {
+            if (!empty($param['id'])) {
+                Redis::Rpush(md5('mobileBlock'),$param['id']);
+                $msg = Common::jsonOutData(200,'拉黑成功!');
+            }
+        }
+
+        return response()->json($msg);
     }
 }
 

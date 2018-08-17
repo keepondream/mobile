@@ -51,7 +51,7 @@
                         <table class="table table-border table-bg table-bordered table-hover">
                             <tbody>
                             <tr class="text-c">
-                                <th width="20%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</th>
+                                <th width="20%">线&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;路</th>
                                 <td>
                                     <span class="select-box">
                                         <select class="select" size="1" name="brandsign" id="brandsignselect">
@@ -176,7 +176,13 @@
                                 </td>
                             </tr>
                             <tr class="text-c">
-                                <th width="20%">排除号段</th>
+                                <th width="20%">指定号码</th>
+                                <td style="position: relative;padding-top: 5px;">
+                                    <input type="text" name="mobile" placeholder=" 指定号码需与来源线路保持一致.如多次获取,请间隔10分钟一次." style="width:100%;" maxlength="11" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9]+/,'');}).call(this)" onblur="this.v();" >
+                                </td>
+                            </tr>
+                            <tr class="text-c">
+                                <th width="20%">排除号码</th>
                                 <td>
                                     <input type="text" name="excludeno" placeholder=" 如：171.172.174.178 每个号段必须是前三位用小数点分隔" style="width:100%;" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9.]+/,'');}).call(this)" onblur="this.v();" value="{{!empty($excludenoval) ? $excludenoval : ''}}">
                                 </td>
@@ -265,22 +271,24 @@
                 <div class="panel-body" style="display: block;">
                     <table class="table table-border table-bordered table-bg">
                         <thead>
-                        <tr>
+                        <tr class="text-c">
                             <th>订单号</th>
                             <th>手机号</th>
                             <th>短信内容</th>
-                            <th>消费状态</th>
+                            <th>状态</th>
                             <th>消费时间</th>
                         </tr>
                         </thead>
                         <tbody>
                         @if(!empty($model) && (count($model) > 0))
                             @foreach($model as $value)
-                                <tr>
+                                <tr class="text-c">
                                     <td><code>{{$value->order_id}}</code></td>
                                     <td><code>{{$value->mobile}}</code></td>
                                     <td><code>{{$value->sms_content}}</code></td>
-                                    <td><span class="label {{$value->is_sms == 1 ? 'label-success' : 'label-danger'}} radius">{{$value->is_sms == 1 ? '已消费' : '未消费'}}</span></td>
+                                    <td><span class="label {{$value->is_sms == 1 ? 'label-success' : 'label-danger'}} radius">{{$value->is_sms == 1 ? '已消费' : '未消费'}}</span>
+                                        {!! ($value->is_block == 1) ? '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning radius" >已拉黑</span>':(((time() - 300) <= $value->get_mobile_time ) ? '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-secondary radius" style="cursor:pointer;" onclick="mobileBlock(this,'.$value->id.')">拉黑</span>':'') !!}
+                                    </td>
                                     <td>{{$value->created_at}}</td>
                                 </tr>
                             @endforeach
@@ -409,7 +417,9 @@
         $("#form-get-mobile").validate({
             rules:{
                 phonenum:"required",
-                url:"required",
+                mobile:{
+                    isMobile:true,
+                },
             },
             onkeyup:false,
             focusCleanup:true,
@@ -448,6 +458,10 @@
                             window.clearInterval(mobiletimer);
                         } else if (mobileindex >= 70) {
                             window.clearInterval(mobiletimer);
+                        } else if ((data.data['count'] == 0) && (data.data['clear'] == 1)) {
+                            window.clearInterval(mobiletimer);
+                            modalalertdemo("指定号码获取操作过于频繁,请10分钟后重试!~");
+                            return false;
                         }
                         //清空
                         $('#mobile_sms_content').empty();
@@ -456,7 +470,14 @@
                         var str = '';
                         var tempContent = '';
                         var tempClass = '';
+                        var tempBlock = '';
                         for (var i = 0; i < res.length; i++) {
+                            // if (res[i].isblock == 0) {
+                            //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-secondary radius" style="cursor:pointer;" onclick="mobileBlock(this,'+res[i].id+')">拉黑</span>';
+                            // } else {
+                            //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning radius">已拉黑</span>';
+                            // }
+
                             if (mobileindex >= 70) {
                                 if (res[i].status == 0) {
                                     tempContent = '超时未使用,所耗积分将5分钟内返还.';
@@ -482,8 +503,24 @@
                     }
                 }
             });
+        }
 
-
+        // 拉黑
+        function mobileBlock(obj,id) {
+            if (id) {
+                $.ajax({
+                    type:"post",
+                    url: "{{route('mobileBlock')}}",
+                    data:{_token:_token,id:id},
+                    dataType:"json",//指定返回的格式
+                    success:function(data){
+                        if (data.code == 200) {
+                            $(obj).removeClass('label-secondary').addClass('label-warning').css('cursor','none').text('已拉黑').removeAttr('onclick');
+                        }
+                    }
+                });
+            }
+            
         }
 
     </script>

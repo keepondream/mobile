@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\Sms;
 use App\Console\Commands\SmsBackCredit;
 use App\Console\Commands\SmsMobile;
+use App\Console\Commands\SmsMobileBlock;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
         Sms::class,
         SmsMobile::class,
         SmsBackCredit::class,
+        SmsMobileBlock::class,
     ];
 
     /**
@@ -50,16 +52,20 @@ class Kernel extends ConsoleKernel
         $schedule->command('smsmobile')
             ->everyMinute()
             ->sendOutputTo('./crontab.log');
-
+        # 获取短信
         $schedule->command('sms')
             ->everyMinute()
             ->sendOutputTo('./smscrontab.log');
 //            ->appendOutputTo('./smscrontab.log');
-
+        # 返回积分
         $schedule->command('credit')
             ->everyMinute()
             ->sendOutputTo('./smsbackcreditcrontab.log');
 //            ->appendOutputTo('./smsbackcreditcrontab.log');
+        # 手机号拉黑
+        $schedule->command('mobileBlock')
+            ->everyMinute()
+            ->sendOutputTo('./smsmobileblockcrontab.log');
     }
 
     /**

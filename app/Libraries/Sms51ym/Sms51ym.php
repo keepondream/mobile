@@ -175,24 +175,27 @@ class Sms51ym
             $mobileArr = explode('|', $res);
             if (!empty($mobileArr[0]) && $mobileArr[0] == 'success') {
                 $mobile = $mobileArr[1];
-                //进行数据库存储
-                $data = [
-                    'user_id' => $memberid,
-                    'order_id' => $orderid,
-                    'brand_type' => $type,
-                    'itemid' => $data['itemid'],
-                    'num' => $num,
-                    'mobile' => $mobile,
-                    'mobile_status' => '1',
-                    'get_mobile_time' => time(),
-                    'mobile_repetition' => $repetition
-                ];
-                MobileLog::create($data);
-                //成功获取扣除用户积分 -----------------以后规则待定----------暂时 一条扣10分
-                $userModel = User::find($memberid);
-                $userModel->credit = $userModel->credit - 10;
-                $userModel->save();
-                return Common::jsonOutData(200,'手机号获取成功',$getMobile);
+                if (!empty($mobile)) {
+                    //进行数据库存储
+                    $data = [
+                        'user_id' => $memberid,
+                        'order_id' => $orderid,
+                        'brand_type' => $type,
+                        'itemid' => $data['itemid'],
+                        'num' => $num,
+                        'mobile' => $mobile,
+                        'mobile_status' => '1',
+                        'get_mobile_time' => time(),
+                        'mobile_repetition' => $repetition
+                    ];
+                    MobileLog::create($data);
+                    //成功获取扣除用户积分 -----------------以后规则待定----------暂时 一条扣10分
+                    $userModel = User::find($memberid);
+                    $userModel->credit = $userModel->credit - 10;
+                    $userModel->save();
+                    return Common::jsonOutData(200,'手机号获取成功',$getMobile);
+                }
+
             } else {
                 //失败则将继续获取 一直获取 重复次数达到 12 次 则确定获取失败
                 //将用户数据存入redis 定时执行
