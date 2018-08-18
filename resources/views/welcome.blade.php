@@ -1,27 +1,5 @@
 @extends('layouts.app')
 @section('scroll')
-    <div id="slider-1" class="bg-fff box-shadow radius">
-        <div class="slider">
-            <div class="bd bg-fff">
-                <div class="tempWrap" style="overflow:hidden; position:relative; width:760px"><ul style="width: 6080px; position: relative; overflow: hidden; padding: 0px; margin: 0px; left: -2280px;"><li class="clone" style="float: left; width: 760px;"><a href="#" target="_blank"><img src="images/b-6.jpg"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li>
-                        <li class="clone" style="float: left; width: 760px;"><a href="#" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}"></a></li></ul></div>
-            </div>
-            <ol class="hd cl">
-                <li class=""><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-                <li class=""><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-                <li class="active"><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-                <li class=""><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-                <li class=""><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-                <li><i></i><img src="{{ asset('temp/scroll/banner1.jpg') }}"></li>
-            </ol>
-        </div>
-    </div>
     <div id="slider-3">
         <div class="slider">
             <div class="bd">
@@ -30,7 +8,7 @@
                         <a href="http://www.h-ui.net/" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}" ></a>
                     </li>
                     <li>
-                        <a href="http://www.h-ui.net/zhaoshang.shtml" target="_blank"><img src="{{ asset('temp/scroll/banner2.jpg') }}" ></a>
+                        <a href="http://www.h-ui.net/zhaoshang.shtml" target="_blank"><img src="{{asset('temp/scroll/banner2.jpg')}}" ></a>
                     </li>
                     <li>
                         <a href="http://h-ui.net/H-ui.admin.shtml" target="_blank"><img src="{{ asset('temp/scroll/banner3.jpg') }}" ></a>
@@ -841,10 +819,5 @@
 
 
 @section('script')
-    <script>
-        $(function () {
-            //幻灯片
-            jQuery("#slider-3 .slider").slide({mainCell:".bd ul",titCell:".hd li",trigger:"click",effect:"leftLoop",autoPlay:true,delayTime:700,interTime:3000,pnLoop:false,titOnClassName:"active"});
-        })
-    </script>
+
 @endsection

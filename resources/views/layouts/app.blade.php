@@ -12,9 +12,9 @@
     <script type="text/javascript" src="{{ asset('lib/html5shiv.js') }}"></script>
     <script type="text/javascript" src="{{ asset('lib/respond.min.js') }}"></script>
     <![endif]-->
-    <link rel="stylesheet" type="text/css" href="{{ asset('static/h-ui/css/H-ui.min.css') }}" />
+    {{--<link rel="stylesheet" type="text/css" href="{{ asset('css/jigsaw.css') }}" />--}}
     {{--<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.slider.css') }}" />--}}
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/jigsaw.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('static/h-ui/css/H-ui.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.8/iconfont.min.css" />
     <!--[if lt IE 9]>
     <link href="{{ asset('static/h-ui/css/H-ui.ie.css') }}" rel="stylesheet" type="text/css" />
@@ -27,8 +27,10 @@
         .ui-sortable .panel-header{ cursor:move}
     </style>
     <title>@yield('title',config('app.name', 'Laravel'))</title>
-    {{--<meta name="keywords" content="关键词,5个左右,单个8汉字以内">--}}
-    {{--<meta name="description" content="网站描述，字数尽量空制在80个汉字，160个字符以内！">--}}
+    <meta name="keywords" content="">
+    {{--关键词,5个左右,单个8汉字以内--}}
+    <meta name="description" content="">
+    {{--网站描述，字数尽量空制在80个汉字，160个字符以内！--}}
 </head>
 <body ontouchstart>
 <div class="sideBox">
@@ -256,6 +258,7 @@
     }
 
     $(function(){
+
         $(".input-text,.textarea").Huifocusblur();
 
         //幻灯片
@@ -269,6 +272,88 @@
             className:"selected",
             speed:"first",
         });
+
+        //启动登录
+        var jump = '{{!empty($jump) ? $jump : ''}}';
+        if (jump) {
+            setTimeout(function () {
+                modaldemo(1);
+            },500);
+        }
+
+        // 登录/注册
+        $("#demoformonlylogin").validate({
+            rules:{
+                name:{
+                    required:true,
+                    minlength:2,
+                    maxlength:16
+                },
+                password:{
+                    required:true,
+                    rangelength:[6,16]
+                },
+                password_confirmation:{
+                    required:true,
+                    equalTo: "#password"
+                },
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                if (!huadongstatus){
+                    modalalertdemo('请滑动验证!~');
+                    return false;
+                }
+                //验证用户名是否存在
+                var name = $('input[name="name"]').val();
+                var pwd2 = $('#registerDivPwd2').length;
+                if (name && pwd2) {
+                    var status = 1;
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{route('checkMember')}}',
+                        data:{name:name,_token:_token},
+                        dataType: 'json',
+                        async: false,
+                        success: function(data){
+                            if (data.code != 200) {
+                                modalalertdemo('此用户名已经存在!~');
+                                status = 2;
+                            }
+                        }
+                    });
+                    if (status == 2) {
+                        return false;
+                    }
+                }
+
+                var url = $('#demoformonlylogin').attr('action');
+                $(form).ajaxSubmit({
+                    type: 'post',
+                    url: url,
+                    success: function(data){
+                        if ((data.code != 200) && (data.code != 208)) {
+                            modalalertdemo(data.msg);
+                            setTimeout(function () {
+                                window.location.reload();
+                            },2000)
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function(XmlHttpRequest, textStatus, errorThrown){
+                        modalalertdemo(JSON.parse(XmlHttpRequest.responseText).errors['name'][0]);
+                    }
+                });
+
+            }
+        });
+
+
+
+
 
         //邮箱提示
         $("#email").emailsuggest();
@@ -304,74 +389,7 @@
             maxlength:200.
         });
 
-        $("#demoformonlylogin").validate({
-            rules:{
-                name:{
-                    required:true,
-                    minlength:2,
-                    maxlength:16
-                },
-                password:{
-                    required:true,
-                    rangelength:[6,16]
-                },
-                password_confirmation:{
-                    required:true,
-                    equalTo: "#password"
-                },
-            },
-            onkeyup:false,
-            focusCleanup:true,
-            success:"valid",
-            submitHandler:function(form){
-                if (!huadongstatus){
-                    modalalertdemo('请滑动验证!~');
-                    return false;
-                }
-                //验证用户名是否存在
-                var name = $('input[name="name"]').val();
-                var pwd2 = $('#registerDivPwd2').length;
-                if (name && pwd2) {
-                    var status = 1;
-                        $.ajax({
-                            type: 'POST',
-                            url: '{{route('checkMember')}}',
-                            data:{name:name,_token:_token},
-                            dataType: 'json',
-                            async: false,
-                            success: function(data){
-                                if (data.code != 200) {
-                                    modalalertdemo('此用户名已经存在!~');
-                                    status = 2;
-                                }
-                            }
-                        });
-                    if (status == 2) {
-                        return false;
-                    }
-                }
 
-                var url = $('#demoformonlylogin').attr('action');
-                $(form).ajaxSubmit({
-                    type: 'post',
-                    url: url,
-                    success: function(data){
-                        if ((data.code != 200) && (data.code != 208)) {
-                            modalalertdemo(data.msg);
-                            setTimeout(function () {
-                                window.location.reload();
-                            },2000)
-                        } else {
-                            window.location.reload();
-                        }
-                    },
-                    error: function(XmlHttpRequest, textStatus, errorThrown){
-                        modalalertdemo(JSON.parse(XmlHttpRequest.responseText).errors['name'][0]);
-                    }
-                });
-
-            }
-        });
 
         //选项卡
         $("#HuiTab-demo1").Huitab({
@@ -427,20 +445,7 @@
             $("body").removeClass('sideBox-open');
         });
 
-        //启动登录
-        var jump = '{{!empty($jump) ? $jump : ''}}';
-        if (jump) {
-            if (!checkLogin()) {
-                setTimeout(function () {
-                    modaldemo(1);
-                },500);
-            }
-        }
-        //验证登录
-        function checkLogin() {
-            var loginstatus = '{{\Illuminate\Support\Facades\Route::has('login')}}';
-            return loginstatus;
-        }
+
     });
 </script>
 @yield('script')
