@@ -26,7 +26,7 @@
     <style type="text/css">
         .ui-sortable .panel-header{ cursor:move}
     </style>
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title',config('app.name', 'Laravel'))</title>
     {{--<meta name="keywords" content="关键词,5个左右,单个8汉字以内">--}}
     {{--<meta name="description" content="网站描述，字数尽量空制在80个汉字，160个字符以内！">--}}
 </head>
@@ -64,65 +64,6 @@
                             @endforeach
                         @endif
 
-
-                        {{--<li>--}}
-                            {{--<a href="http://www.h-ui.net/lib/jQuery.cookie.js.shtml" target="_blank">脚本</a>--}}
-                        {{--</li>--}}
-                        {{--<li class="dropDown dropDown_hover">--}}
-                            {{--<a href="javascript:;" class="dropDown_A">工具 <i class="Hui-iconfont">&#xe6d5;</i></a>--}}
-                            {{--<ul class="dropDown-menu menu radius box-shadow">--}}
-                                {{--<li>--}}
-                                    {{--<a href="http://www.h-ui.net/bug.shtml" target="_blank">Bug兼容性汇总</a>--}}
-                                {{--</li>--}}
-                                {{--<li>--}}
-                                    {{--<a href="http://www.h-ui.net/websafecolors.shtml" target="_blank">web安全色</a>--}}
-                                {{--</li>--}}
-                                {{--<li>--}}
-                                    {{--<a href="http://www.h-ui.net/Hui-3.7-Hui-iconfont.shtml" target="_blank">Hui-iconfont</a>--}}
-                                {{--</li>--}}
-                                {{--<li>--}}
-                                    {{--<a href="javascript:;">web工具箱<i class="arrow Hui-iconfont">&#xe6d7;</i></a>--}}
-                                    {{--<ul class="menu">--}}
-                                        {{--<li>--}}
-                                            {{--<a href="http://www.h-ui.net/tools/jsformat.shtml" target="_blank">JS/HTML格式化工具</a>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="http://www.h-ui.net/tools/HTMLtoJS.shtml" target="_blank">HTML/JS转换工具</a>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="http://www.h-ui.net/tools/cssformat.shtml" target="_blank">CSS代码格式化工具</a>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="http://www.h-ui.net/tools/daxiaoxie.shtml" target="_blank">字母大小写转换工具</a>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="http://www.h-ui.net/tools/fantizhuanhuan.shtml" target="_blank">繁体字、火星文转换</a>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="javascript:;">三级菜单<i class="arrow Hui-iconfont">&#xe6d7;</i></a>--}}
-                                            {{--<ul class="menu">--}}
-                                                {{--<li>--}}
-                                                    {{--<a href="javascript:;">四级菜单</a>--}}
-                                                {{--</li>--}}
-                                                {{--<li>--}}
-                                                    {{--<a href="javascript:;">四级菜单</a>--}}
-                                                {{--</li>--}}
-                                                {{--<li>--}}
-                                                    {{--<a href="javascript:;">四级菜单</a>--}}
-                                                {{--</li>--}}
-                                            {{--</ul>--}}
-                                        {{--</li>--}}
-                                        {{--<li>--}}
-                                            {{--<a href="#">三级导航</a>--}}
-                                        {{--</li>--}}
-                                    {{--</ul>--}}
-                                {{--</li>--}}
-                                {{--<li>--}}
-                                    {{--<a href="#">二级导航</a>--}}
-                                {{--</li>--}}
-                                {{--<li class="disabled">--}}
-                                    {{--<a href="javascript:;">二级菜单</a>--}}
-                                {{--</li>--}}
-                            {{--</ul>--}}
-                        {{--</li>--}}
-                        {{--<li>--}}
-                            {{--<a href="http://h-ui.net/aboutHui.shtml" target="_blank">联系我们</a>--}}
-                        {{--</li>--}}
                         @if (Route::has('login'))
                                 @auth
                                 <li class="dropDown dropDown_hover f-r">

@@ -138,7 +138,7 @@ class Sms51ym
         ];
 
         //调用12次后就放弃调用 手机号码获取2分钟获取不到则定义失败
-        if ($repetition >= 12) {
+        if ($repetition >= 60) {
             $data = [
                 'user_id' => $memberid,
                 'order_id' => $orderid,
@@ -199,7 +199,14 @@ class Sms51ym
             } else {
                 //失败则将继续获取 一直获取 重复次数达到 12 次 则确定获取失败
                 //将用户数据存入redis 定时执行
-                Redis::Rpush(md5('mobile'),json_encode($getMobile));
+                //做个Redis 队列 数据均衡 取出最小值进行丢入
+                $redisArr = [
+                    md5('mobile') => Redis::Llen(md5('mobile')),
+                    md5('mobiletwo') => Redis::Llen(md5('mobiletwo')),
+                    md5('mobilethree') => Redis::Llen(md5('mobilethree')),
+                ];
+                asort($redisArr);
+                Redis::Rpush(key($redisArr),json_encode($getMobile));
                 return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
             }
         }

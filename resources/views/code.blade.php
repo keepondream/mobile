@@ -459,9 +459,13 @@
                         } else if (mobileindex >= 70) {
                             window.clearInterval(mobiletimer);
                         } else if ((data.data['count'] == 0) && (data.data['clear'] == 1)) {
-                            window.clearInterval(mobiletimer);
-                            modalalertdemo("指定号码获取操作过于频繁,请10分钟后重试!~");
-                            return false;
+                            var zdmobile = $('input[name="mobile"]').val();
+                            console.log(zdmobile);
+                            if (zdmobile) {
+                                window.clearInterval(mobiletimer);
+                                modalalertdemo("指定号码获取操作过于频繁,请10分钟后重试!~");
+                                return false;
+                            }
                         }
                         //清空
                         $('#mobile_sms_content').empty();

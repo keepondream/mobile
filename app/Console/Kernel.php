@@ -52,6 +52,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('smsmobile')
             ->everyMinute()
             ->sendOutputTo('./crontab.log');
+
+        $schedule->command('smsmobiletwo')
+            ->everyMinute()
+            ->sendOutputTo('./crontabtwo.log');
+
+        $schedule->command('smsmobilethree')
+            ->everyMinute()
+            ->sendOutputTo('./crontabthree.log');
+
         # 获取短信
         $schedule->command('sms')
             ->everyMinute()

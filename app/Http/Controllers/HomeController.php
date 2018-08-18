@@ -200,20 +200,32 @@ class HomeController extends Controller
             if (!empty($phonenum) && $phonenum > 0) {
                 //生成唯一订单号获取手机号
                 $order_id = Common::orderSn();
-                $model = new Sms51ym();
+//                $model = new Sms51ym();
                 for ($i = 0 ; $i < $phonenum; $i++) {
-                    //编辑平台操作标识
-                    ## 在此方法里面手机号获取成功后应立即扣除相应积分
-                    $model::getMobile($brandsign,Auth::user()->id,$order_id,$phonenum,$param);
-                    //如果获取多条,每条等待2秒
-//                    sleep(2);
+                    //此处获取手机号,进行内容分发,提高用户体验
+                    $getMobile = [
+                        'type' => $brandsign,
+                        'orderid' => $order_id,
+                        'num' => $phonenum,
+                        'memberid' => Auth::id(),
+                        'data' => $param,
+                        'repetition' => 0
+                    ];
+//                    $model::getMobile($brandsign,Auth::user()->id,$order_id,$phonenum,$param);
+                    $redisArr = [
+                        md5('mobile') => Redis::Llen(md5('mobile')),
+                        md5('mobiletwo') => Redis::Llen(md5('mobiletwo')),
+                        md5('mobilethree') => Redis::Llen(md5('mobilethree')),
+                    ];
+                    asort($redisArr);
+                    Redis::Rpush(key($redisArr),json_encode($getMobile));
                 }
                 //组装 订单ID 并返回 在客户端 进行手机号数据调用
                 $outdata = [
                     'order_id' => $order_id,
                     'num' => $phonenum
                 ];
-                $msg = Common::jsonOutData(200,'正在拼命加载中....请您稍作等待!',$outdata);
+                $msg = Common::jsonOutData(200,'正在拼命加载中......',$outdata);
             }
 
         } elseif ($brandsign == 'maizi') {

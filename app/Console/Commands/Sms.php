@@ -58,9 +58,6 @@ class Sms extends Command
                     } elseif ($sms['brand_type'] == 'maizi') {
                         $this->line('麦子接口');
                     }
-
-                    //间隔2秒获取,缓解服务器io压力 增加获取成功率
-                    sleep(2);
                 }
             }
         } catch (\Exception $exception) {
