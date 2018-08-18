@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Libraries\Sms51ym\Sms51ym;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 
 class SmsMobileTwo extends Command
 {
@@ -31,9 +33,7 @@ class SmsMobileTwo extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle()
     {
