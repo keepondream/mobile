@@ -1,17 +1,12 @@
 #!/bin/bash
 /usr/local/php/bin/php /data/www/df5gcn/artisan schedule:run >> /dev/null
-
-
 #for((i=1;i<=50;i++));do
 #sleep 3
 #done
-
 # 运行laravel 定时任务 三秒一次脚本
 # /usr/local/php/bin/php /data/www/df5gcn/artisan schedule:run >> /data/www/df5gcn/cron.log
-
 # crotabl 每分钟 运行laravel shell 脚本
 # * * * * * /data/www/df5gcn/three-seconds.sh
-
 # * * * * *  /data/www/df5gcn/three-seconds.sh
 # * * * * * sleep 3 &&  /data/www/df5gcn/three-seconds.sh
 # * * * * * sleep 6 &&  /data/www/df5gcn/three-seconds.sh
