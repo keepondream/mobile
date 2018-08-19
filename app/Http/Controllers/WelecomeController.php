@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Common\Common;
-use App\Libraries\Gtphpsdk\Lib\ClassGeetestlib;
+use App\Libraries\GeeTestSdk\GeetestLib;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -63,7 +63,7 @@ class WelecomeController extends Controller
 
     public function geetestCheckOnly(Request $request)
     {
-        $Gt = new ClassGeetestlib(env('GEETEST_ID'),env('GEETEST_KEY'));
+        $Gt = new GeetestLib(env('GEETEST_ID'),env('GEETEST_KEY'));
         $user_id = "test";
         $status = $Gt->pre_process($user_id);
         echo $Gt->get_response_str();
