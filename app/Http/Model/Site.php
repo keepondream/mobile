@@ -18,6 +18,6 @@ class Site extends Model
      *
      * @var array
      */
-    protected $fillable = ['title','keywords','description','icp','countscript','copyright'];
+    protected $fillable = ['title','keywords','description','icp','countscript','copyright','keywords1','keywords2','keywords3'];
 
 }
