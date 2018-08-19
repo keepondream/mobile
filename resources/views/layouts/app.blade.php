@@ -194,124 +194,15 @@
     var _token = $("meta[name='csrf-token']").attr('content');
     var huadongstatus = '';
 
-    function getGeeTest() {
-        $.ajax({
-            url: "{{route('geetestCheckOnly')}}?type=pc&t=" + (new Date()).getTime(), // 加随机数防止缓存
-            type: "get",
-            dataType: "json",
-            success: function (data) {
-                // 使用initGeetest接口
-                // 参数1：配置参数
-                // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
-                initGeetest({
-                    gt: data.gt,
-                    challenge: data.challenge,
-                    product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
-                    offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
-                    // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
-                }, function (captchaObj) {
-                    //监听验证成功实践
-                    captchaObj.onSuccess(function () {
-                        var result = captchaObj.getValidate();
-                        //此处省略二级验证
-                        //.....
-                        //添加标识状态
-                        if (result) {
-                            huadongstatus = 1;
-                        }
-                    });
-                    //添加组件
-                    captchaObj.appendTo('#captcha');
-                    //监听组件加载完事件
-                    captchaObj.onReady(function () {
-                        // DOM 准备好后，隐藏 #loading-tip 元素
-                        // 仅作示例用，用您适合的方式隐藏即可
-                        document.getElementById('loading-tip').style.display = 'none';
-                    });
-                });
-            }
-        });
-    }
-    // getGeeTest();
-    //判断是否存在class
-    function hasClass( elements,cName ){
-        return !!elements.className.match( new RegExp( "(\\s|^)" + cName + "(\\s|$)") ); // ( \\s|^ ) 判断前面是否有空格 （\\s | $ ）判断后面是否有空格 两个感叹号为转换为布尔值 以方便做判断
-    };
-    //添加class
-    function addClass( elements,cName ){
-        if( !hasClass( elements,cName ) ){
-            elements.className += " " + cName;
-        };
-    }
-    //删除class
-    function removeClass( elements,cName ){
-        if( hasClass( elements,cName ) ){
-            elements.className = elements.className.replace( new RegExp( "(\\s|^)" + cName + "(\\s|$)" )," " ); // replace方法是替换
-        };
-    };
-    //滑动验证失败
-    function cleanMsg() {
-        document.getElementById('huodongmsg').innerHTML = '验证失败！';
-        removeClass(document.getElementById('huodongmsg'), 'label-success');
-        addClass(document.getElementById('huodongmsg'), 'label');
-        addClass(document.getElementById('huodongmsg'), 'label-danger');
-        addClass(document.getElementById('huodongmsg'), 'radius');
-        huadongstatus = '';
-    };
-
-    //登陆注册弹窗
-    function modaldemo(status){
-        //初始化验证值
-        huadongstatus = '';
-        if (status == 1){
-            var url = '{{ route('login') }}';
-            $('#demoformonlylogin').attr('action',url);
-            $("#registerTitle").html('登录');
-            $('#registerDivPwd2').remove();
-            $('#registerDivSubmit').html('登录');
-        } else {
-            var url = '{{ route('register') }}';
-            $('#demoformonlylogin').attr('action',url);
-            $("#registerTitle").html('注册');
-            $('#registerDivSubmit').html('立即注册');
-            if (!$('#registerDivPwd2').length) {
-                var pasdiv = "<div class=\"row cl\" id=\"registerDivPwd2\"><label class=\"form-label col-xs-3\">确认密码</label><div class=\"formControls col-xs-8\"><input type=\"password\" class=\"input-text\" autocomplete=\"off\" placeholder=\"请输入确认密码\" name=\"password_confirmation\" id=\"password2\"></div></div>";
-                $("#registerDivPwd").after(pasdiv);
-            }
-        }
-        $('#captcha').unbind();
-        $('#captcha').empty();
-        $('#captcha').append('<div id="loading-tip">加载中，请稍后...</div>');
-        getGeeTest();
-        // $('#captcha').unbind();
-        // $('#huodongmsg').empty();
-        //
-        // jigsaw.init({
-        //     el: document.getElementById('captcha'),
-        //     onSuccess: function() {
-        //         document.getElementById('huodongmsg').innerHTML = '验证成功！';
-        //         removeClass(document.getElementById('huodongmsg'), 'label-danger');
-        //         addClass(document.getElementById('huodongmsg'), 'label');
-        //         addClass(document.getElementById('huodongmsg'), 'label-success');
-        //         addClass(document.getElementById('huodongmsg'), 'radius');
-        //         huadongstatus = 1;
-        //     },
-        //     onFail: cleanMsg,
-        //     onRefresh: cleanMsg
-        // });
-        $("#modal-demo").modal("show");
-    }
-    //消息框
-    function modalalertdemo(msg){
-        $.Huimodalalert(msg,2000);
-    }
 
     $(function(){
 
         $(".input-text,.textarea").Huifocusblur();
 
         //幻灯片
-        jQuery("#slider-3 .slider").slide({mainCell:".bd ul",titCell:".hd li",trigger:"click",effect:"leftLoop",autoPlay:true,delayTime:700,interTime:3000,pnLoop:false,titOnClassName:"active"});
+        // jQuery("#slider-3 .slider").slide({mainCell:".bd ul",titCell:".hd li",trigger:"click",effect:"leftLoop",autoPlay:true,delayTime:700,interTime:3000,pnLoop:false,titOnClassName:"active"});
+        $(function(){
+            jQuery("#slider-1 .slider").slide({mainCell:".bd ul",titCell:".hd li",trigger:"click",effect:"leftLoop",autoPlay:true,delayTime:850,interTime:7000,pnLoop:false,titOnClassName:"active"})});
 
         $(".panel").Huifold({
             titCell:'.panel-header',
@@ -496,6 +387,119 @@
 
 
     });
+
+    function getGeeTest() {
+        $.ajax({
+            url: "{{route('geetestCheckOnly')}}?type=pc&t=" + (new Date()).getTime(), // 加随机数防止缓存
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                // 使用initGeetest接口
+                // 参数1：配置参数
+                // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+                initGeetest({
+                    gt: data.gt,
+                    challenge: data.challenge,
+                    product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                    offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                    // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+                }, function (captchaObj) {
+                    //监听验证成功实践
+                    captchaObj.onSuccess(function () {
+                        var result = captchaObj.getValidate();
+                        //此处省略二级验证
+                        //.....
+                        //添加标识状态
+                        if (result) {
+                            huadongstatus = 1;
+                        }
+                    });
+                    //添加组件
+                    captchaObj.appendTo('#captcha');
+                    //监听组件加载完事件
+                    captchaObj.onReady(function () {
+                        // DOM 准备好后，隐藏 #loading-tip 元素
+                        // 仅作示例用，用您适合的方式隐藏即可
+                        document.getElementById('loading-tip').style.display = 'none';
+                    });
+                });
+            }
+        });
+    }
+    // getGeeTest();
+    //判断是否存在class
+    function hasClass( elements,cName ){
+        return !!elements.className.match( new RegExp( "(\\s|^)" + cName + "(\\s|$)") ); // ( \\s|^ ) 判断前面是否有空格 （\\s | $ ）判断后面是否有空格 两个感叹号为转换为布尔值 以方便做判断
+    };
+    //添加class
+    function addClass( elements,cName ){
+        if( !hasClass( elements,cName ) ){
+            elements.className += " " + cName;
+        };
+    }
+    //删除class
+    function removeClass( elements,cName ){
+        if( hasClass( elements,cName ) ){
+            elements.className = elements.className.replace( new RegExp( "(\\s|^)" + cName + "(\\s|$)" )," " ); // replace方法是替换
+        };
+    };
+    //滑动验证失败
+    function cleanMsg() {
+        document.getElementById('huodongmsg').innerHTML = '验证失败！';
+        removeClass(document.getElementById('huodongmsg'), 'label-success');
+        addClass(document.getElementById('huodongmsg'), 'label');
+        addClass(document.getElementById('huodongmsg'), 'label-danger');
+        addClass(document.getElementById('huodongmsg'), 'radius');
+        huadongstatus = '';
+    };
+
+    //登陆注册弹窗
+    function modaldemo(status){
+        //初始化验证值
+        huadongstatus = '';
+        if (status == 1){
+            var url = '{{ route('login') }}';
+            $('#demoformonlylogin').attr('action',url);
+            $("#registerTitle").html('登录');
+            $('#registerDivPwd2').remove();
+            $('#registerDivSubmit').html('登录');
+        } else {
+            var url = '{{ route('register') }}';
+            $('#demoformonlylogin').attr('action',url);
+            $("#registerTitle").html('注册');
+            $('#registerDivSubmit').html('立即注册');
+            if (!$('#registerDivPwd2').length) {
+                var pasdiv = "<div class=\"row cl\" id=\"registerDivPwd2\"><label class=\"form-label col-xs-3\">确认密码</label><div class=\"formControls col-xs-8\"><input type=\"password\" class=\"input-text\" autocomplete=\"off\" placeholder=\"请输入确认密码\" name=\"password_confirmation\" id=\"password2\"></div></div>";
+                $("#registerDivPwd").after(pasdiv);
+            }
+        }
+        $('#captcha').unbind();
+        $('#captcha').empty();
+        $('#captcha').append('<div id="loading-tip">加载中，请稍后...</div>');
+        getGeeTest();
+        // $('#captcha').unbind();
+        // $('#huodongmsg').empty();
+        //
+        // jigsaw.init({
+        //     el: document.getElementById('captcha'),
+        //     onSuccess: function() {
+        //         document.getElementById('huodongmsg').innerHTML = '验证成功！';
+        //         removeClass(document.getElementById('huodongmsg'), 'label-danger');
+        //         addClass(document.getElementById('huodongmsg'), 'label');
+        //         addClass(document.getElementById('huodongmsg'), 'label-success');
+        //         addClass(document.getElementById('huodongmsg'), 'radius');
+        //         huadongstatus = 1;
+        //     },
+        //     onFail: cleanMsg,
+        //     onRefresh: cleanMsg
+        // });
+        $("#modal-demo").modal("show");
+    }
+    //消息框
+    function modalalertdemo(msg){
+        $.Huimodalalert(msg,2000);
+    }
+
 </script>
 @yield('script')
 </body>

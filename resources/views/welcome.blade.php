@@ -1,24 +1,33 @@
 @extends('layouts.app')
 @section('scroll')
-    <div id="slider-3">
+    <style>
+        #slider-1{width:100%;text-align:center;height: 280px;}
+        #slider-1 .bd,#slider-1 .bd li,#slider-1 .bd img{width:100%; height:220px}
+        #slider-1 .hd{ margin-top:2px;height:58px;width:100%;}
+        #slider-1 .hd li{ position:relative; display:inline-block; float:left; margin-right:2px;cursor:pointer;width:16%; height:58px}
+        #slider-1 .hd li img{ display:block;width:100%; height:58px}
+        #slider-1 .hd li i{ position:absolute; display:block; z-index:9; left:0; top:0; right:0; bottom:0; background-color:rgba(0,0,0,0.6)}
+        #slider-1 .hd li.active i{ width:11px; height:6px; background:url({{ asset('temp/scroll/iconpic-arrow-up.png') }}) no-repeat 0 0; top:-6px; left:50%; margin-left:-5px; bottom:auto; right:auto}
+    </style>
+    <div id="slider-1" class="bg-fff box-shadow radius">
         <div class="slider">
-            <div class="bd">
+            <div class="bd bg-fff">
                 <ul>
-                    <li>
-                        <a href="http://www.h-ui.net/" target="_blank"><img src="{{ asset('temp/scroll/banner1.jpg') }}" ></a>
-                    </li>
-                    <li>
-                        <a href="http://www.h-ui.net/zhaoshang.shtml" target="_blank"><img src="{{asset('temp/scroll/banner2.jpg')}}" ></a>
-                    </li>
-                    <li>
-                        <a href="http://h-ui.net/H-ui.admin.shtml" target="_blank"><img src="{{ asset('temp/scroll/banner3.jpg') }}" ></a>
-                    </li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-1.jpg') }}" ></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-2.jpg') }}" ></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-3.jpg') }}" ></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-4.jpg') }}" ></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-5.jpg') }}" ></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('temp/scroll/b-6.jpg') }}" ></a></li>
                 </ul>
             </div>
-            <ol class="hd cl dots">
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
+            <ol class="hd cl" style="bottom: -60px;">
+                <li><i></i><img src="{{ asset('temp/scroll/s-1.jpg') }}"></li>
+                <li><i></i><img src="{{ asset('temp/scroll/s-2.jpg') }}"></li>
+                <li><i></i><img src="{{ asset('temp/scroll/s-3.jpg') }}"></li>
+                <li><i></i><img src="{{ asset('temp/scroll/s-4.jpg') }}"></li>
+                <li><i></i><img src="{{ asset('temp/scroll/s-5.jpg') }}"></li>
+                <li><i></i><img src="{{ asset('temp/scroll/s-6.jpg') }}"></li>
             </ol>
         </div>
     </div>
