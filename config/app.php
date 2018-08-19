@@ -166,6 +166,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        /**
+         * geetest 极验验证
+         */
+        Germey\Geetest\GeetestServiceProvider::class,
 
     ],
 

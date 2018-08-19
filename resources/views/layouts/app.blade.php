@@ -23,6 +23,7 @@
     <script type="text/javascript" src="{{ asset('lib/DD_belatedPNG_0.0.8a-min.js') }}" ></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
+
     <style type="text/css">
         .ui-sortable .panel-header{ cursor:move}
     </style>
@@ -132,7 +133,7 @@
         <div class="modal-content radius">
             <div class="modal-header">
                 <h3 class="modal-title" style="text-align: center;" id="registerTitle">注册</h3>
-                <a class="close btn btn-default radius" data-dismiss="modal" aria-hidden="true" href="javascript:;">×</a>
+                <a class="close btn btn-default radius" data-dismiss="modal" aria-hidden="true" href="javascript:;" id="close-change-login">×</a>
             </div>
             <div class="modal-body">
                 <div class="panel-body" id="registerDiv" style="padding: 0;">
@@ -160,9 +161,12 @@
                             <label class="form-label col-xs-3">
                             </label>
                             <div class="formControls col-xs-8">
+                                <div id="captcha">
+                                    <div id="loading-tip">加载中，请稍后...</div>
+                                </div>
                                 {{--<div id="slider2" class="slider"></div>--}}
-                                <div id="captcha" style="position: relative"></div>
-                                <div id="huodongmsg" class="text-l mt-20"></div>
+                                {{--<div id="captcha" style="position: relative"></div>--}}
+                                {{--<div id="huodongmsg" class="text-l mt-20"></div>--}}
                             </div>
                         </div>
                 </div>
@@ -183,11 +187,52 @@
 <script type="text/javascript" src="{{ asset('lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
 <script type="text/javascript" src="{{ asset('lib/jquery.validation/1.14.0/messages_zh.min.js') }}"></script>
 {{--<script type="text/javascript" src="{{ asset('js/jquery.slider.min.js') }}"></script>--}}
-<script type="text/javascript" src="{{ asset('js/jigsaw.js') }}"></script>
+{{--<script type="text/javascript" src="{{ asset('js/jigsaw.js') }}"></script>--}}
+<script src="https://static.geetest.com/static/tools/gt.js"></script>
 
 <script>
     var _token = $("meta[name='csrf-token']").attr('content');
     var huadongstatus = '';
+
+    function getGeeTest() {
+        $.ajax({
+            url: "{{route('geetestCheckOnly')}}?type=pc&t=" + (new Date()).getTime(), // 加随机数防止缓存
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                // 使用initGeetest接口
+                // 参数1：配置参数
+                // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+                initGeetest({
+                    gt: data.gt,
+                    challenge: data.challenge,
+                    product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                    offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                    // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+                }, function (captchaObj) {
+                    //监听验证成功实践
+                    captchaObj.onSuccess(function () {
+                        var result = captchaObj.getValidate();
+                        //此处省略二级验证
+                        //.....
+                        //添加标识状态
+                        if (result) {
+                            huadongstatus = 1;
+                        }
+                    });
+                    //添加组件
+                    captchaObj.appendTo('#captcha');
+                    //监听组件加载完事件
+                    captchaObj.onReady(function () {
+                        // DOM 准备好后，隐藏 #loading-tip 元素
+                        // 仅作示例用，用您适合的方式隐藏即可
+                        document.getElementById('loading-tip').style.display = 'none';
+                    });
+                });
+            }
+        });
+    }
+    // getGeeTest();
     //判断是否存在class
     function hasClass( elements,cName ){
         return !!elements.className.match( new RegExp( "(\\s|^)" + cName + "(\\s|$)") ); // ( \\s|^ ) 判断前面是否有空格 （\\s | $ ）判断后面是否有空格 两个感叹号为转换为布尔值 以方便做判断
@@ -234,22 +279,26 @@
                 $("#registerDivPwd").after(pasdiv);
             }
         }
+        $('#captcha').unbind();
         $('#captcha').empty();
-        $('#huodongmsg').empty();
-
-        jigsaw.init({
-            el: document.getElementById('captcha'),
-            onSuccess: function() {
-                document.getElementById('huodongmsg').innerHTML = '验证成功！';
-                removeClass(document.getElementById('huodongmsg'), 'label-danger');
-                addClass(document.getElementById('huodongmsg'), 'label');
-                addClass(document.getElementById('huodongmsg'), 'label-success');
-                addClass(document.getElementById('huodongmsg'), 'radius');
-                huadongstatus = 1;
-            },
-            onFail: cleanMsg,
-            onRefresh: cleanMsg
-        });
+        $('#captcha').append('<div id="loading-tip">加载中，请稍后...</div>');
+        getGeeTest();
+        // $('#captcha').unbind();
+        // $('#huodongmsg').empty();
+        //
+        // jigsaw.init({
+        //     el: document.getElementById('captcha'),
+        //     onSuccess: function() {
+        //         document.getElementById('huodongmsg').innerHTML = '验证成功！';
+        //         removeClass(document.getElementById('huodongmsg'), 'label-danger');
+        //         addClass(document.getElementById('huodongmsg'), 'label');
+        //         addClass(document.getElementById('huodongmsg'), 'label-success');
+        //         addClass(document.getElementById('huodongmsg'), 'radius');
+        //         huadongstatus = 1;
+        //     },
+        //     onFail: cleanMsg,
+        //     onRefresh: cleanMsg
+        // });
         $("#modal-demo").modal("show");
     }
     //消息框
@@ -303,7 +352,7 @@
             success:"valid",
             submitHandler:function(form){
                 if (!huadongstatus){
-                    modalalertdemo('请滑动验证!~');
+                    modalalertdemo('请先进行安全验证!~');
                     return false;
                 }
                 //验证用户名是否存在

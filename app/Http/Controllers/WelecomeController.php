@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Common\Common;
-use App\http\Model\Category;
+use App\Libraries\Gtphpsdk\Lib\ClassGeetestlib;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class WelecomeController extends Controller
 {
@@ -58,5 +58,14 @@ class WelecomeController extends Controller
             $msg = Common::jsonOutData(200,'ok');
         }
         return response()->json($msg);
+    }
+
+
+    public function geetestCheckOnly(Request $request)
+    {
+        $Gt = new ClassGeetestlib(env('GEETEST_ID'),env('GEETEST_KEY'));
+        $user_id = "test";
+        $status = $Gt->pre_process($user_id);
+        echo $Gt->get_response_str();
     }
 }

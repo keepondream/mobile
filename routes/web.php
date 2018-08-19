@@ -22,6 +22,7 @@ Route::get('/', 'WelecomeController@index')->name('home');
 Route::post('/checkMember','WelecomeController@checkMember')->name('checkMember');
 Route::get('/home', 'HomeController@product')->name('product');
 Route::get('checklogin','WelecomeController@checklogin')->name('checklogin');
+Route::any('geetestCheckOnly','WelecomeController@geetestCheckOnly')->name('geetestCheckOnly');
 
 //非法路劲跳转前台启动登录
 Route::get('/jump','WelecomeController@jump')->name('jump');
