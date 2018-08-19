@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Common\Common;
 use App\http\Model\Menu;
+use App\Http\Model\Site;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -12,9 +13,30 @@ class SiteController extends Controller
     //系统管理
 
     //系统设置
-    public function set()
+    public function set(Request $request)
     {
-        return view('admin/set');
+        //获取数据并验证安全处理
+        $param = Common::dataCheck($request->input());
+        if ($request->isMethod('post')) {
+            $sitemodel = Site::find(1);
+            if (empty($sitemodel)) {
+                $sitemodel = new Site();
+            }
+            $sitemodel->title = $param['title'];
+            $sitemodel->keywords = $param['keywords'];
+            $sitemodel->keywords1 = $param['keywords1'];
+            $sitemodel->keywords2 = $param['keywords2'];
+            $sitemodel->keywords3 = $param['keywords3'];
+            $sitemodel->description = $param['description'];
+            $sitemodel->copyright = $param['copyright'];
+            $sitemodel->icp = $param['icp'];
+            $sitemodel->countscript = $param['countscript'];
+            $sitemodel->save();
+            $msg = Common::jsonOutData(200,'设置成功!');
+            return response()->json($msg);
+        }
+        $siteinfo = $this->siteinfo;
+        return view('admin/set',compact('siteinfo'));
     }
 
     /**

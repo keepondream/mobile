@@ -31,6 +31,7 @@ class HomeController extends Controller
     public function code(Request $request)
     {
         $data['categorys'] = $this->category;//导航
+        $data['siteinfo'] = $this->siteinfo;
         $data['categoryUrl'] = 'code';//当前导航url
         $data['user'] = Auth::user();
         //Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间

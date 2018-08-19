@@ -65,7 +65,7 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin'], function () {
 
 
     //系统管理
-    Route::get('set','SiteController@set')->name('set');
+    Route::any('set','SiteController@set')->name('set');
 
     //菜单管理
     Route::any('menu','SiteController@menu')->name('menu');

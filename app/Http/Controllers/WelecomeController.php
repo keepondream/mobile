@@ -29,6 +29,7 @@ class WelecomeController extends Controller
 //        dd(Auth::user());
 //        Common::recordAdminUserLog('2','张三','首页','登陆首页');
         $data['categorys'] = $this->category;
+        $data['siteinfo'] = $this->siteinfo;
         return view('welcome',$data);
     }
 
@@ -40,6 +41,7 @@ class WelecomeController extends Controller
     public function jump(Request $request)
     {
         $data['categorys'] = $this->category;
+        $data['siteinfo'] = $this->siteinfo;
         $data['jump'] = 1;
         return view('welcome', $data);
     }

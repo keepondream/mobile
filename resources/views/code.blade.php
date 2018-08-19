@@ -425,6 +425,7 @@
             focusCleanup:true,
             success:"valid",
             submitHandler:function(form){
+                $('#GetMobileNoBtn').attr('disabled','disabled');
                 $(form).ajaxSubmit(function (data) {
                     modalalertdemo(data.msg);
                     if (data.code == 200) {
@@ -437,7 +438,10 @@
                         //定时执行
                         mobiletimer = window.setInterval(function () {
                             mobile_get(data.data['order_id'],data.data['num']);
-                        },5000)
+                        },5000);
+                        return false;
+                    } else {
+                        return false;
                     }
                 });
             }
@@ -460,7 +464,6 @@
                             window.clearInterval(mobiletimer);
                         } else if ((data.data['count'] == 0) && (data.data['clear'] == 1)) {
                             var zdmobile = $('input[name="mobile"]').val();
-                            console.log(zdmobile);
                             if (zdmobile) {
                                 window.clearInterval(mobiletimer);
                                 modalalertdemo("指定号码获取操作过于频繁,请10分钟后重试!~");
@@ -475,35 +478,38 @@
                         var tempContent = '';
                         var tempClass = '';
                         var tempBlock = '';
-                        for (var i = 0; i < res.length; i++) {
-                            // if (res[i].isblock == 0) {
-                            //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-secondary radius" style="cursor:pointer;" onclick="mobileBlock(this,'+res[i].id+')">拉黑</span>';
-                            // } else {
-                            //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning radius">已拉黑</span>';
-                            // }
+                        if (res.length > 0) {
+                            for (var i = 0; i < res.length; i++) {
+                                // if (res[i].isblock == 0) {
+                                //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-secondary radius" style="cursor:pointer;" onclick="mobileBlock(this,'+res[i].id+')">拉黑</span>';
+                                // } else {
+                                //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning radius">已拉黑</span>';
+                                // }
 
-                            if (mobileindex >= 70) {
-                                if (res[i].status == 0) {
-                                    tempContent = '超时未使用,所耗积分将5分钟内返还.';
-                                    tempClass = 'danger';
+                                if (mobileindex >= 70) {
+                                    if (res[i].status == 0) {
+                                        tempContent = '超时未使用,所耗积分将5分钟内返还.';
+                                        tempClass = 'danger';
+                                    } else {
+                                        tempContent = res[i].content;
+                                        tempClass = res[i].class;
+                                    }
+                                    str += '<tr class="text-c '+tempClass+'">' +
+                                        '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
+                                        '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
+                                        '<td class="col-xs-4 col-sm-4" style="float: none;">'+tempContent+'</td>' +
+                                        '</tr>';
                                 } else {
-                                    tempContent = res[i].content;
-                                    tempClass = res[i].class;
+                                    str += '<tr class="text-c '+res[i].class+'">' +
+                                        '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
+                                        '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
+                                        '<td class="col-xs-4 col-sm-4" style="float: none;">'+res[i].content+'</td>' +
+                                        '</tr>';
                                 }
-                                str += '<tr class="text-c '+tempClass+'">' +
-                                    '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
-                                    '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
-                                    '<td class="col-xs-4 col-sm-4" style="float: none;">'+tempContent+'</td>' +
-                                    '</tr>';
-                            } else {
-                                str += '<tr class="text-c '+res[i].class+'">' +
-                                    '<td class="col-xs-3 col-sm-3" style="float: none;">'+res[i].mobile+'</td>' +
-                                    '<td class="col-xs-5 col-sm-5" style="float: none;">'+res[i].sms_content+'</td>' +
-                                    '<td class="col-xs-4 col-sm-4" style="float: none;">'+res[i].content+'</td>' +
-                                    '</tr>';
                             }
+                            $('#mobile_sms_content').append(str);
                         }
-                        $('#mobile_sms_content').append(str);
+
                     }
                 }
             });

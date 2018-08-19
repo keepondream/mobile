@@ -27,10 +27,10 @@
     <style type="text/css">
         .ui-sortable .panel-header{ cursor:move}
     </style>
-    <title>@yield('title',config('app.name', 'Laravel'))</title>
-    <meta name="keywords" content="">
+    <title>@yield('title',(!empty($siteinfo->title) ? $siteinfo->title : config('app.name', 'Larav11e')))</title>
+    <meta name="keywords" content="{{!empty($siteinfo->keywords) ? $siteinfo->keywords : ''}}">
     {{--关键词,5个左右,单个8汉字以内--}}
-    <meta name="description" content="">
+    <meta name="description" content="{{!empty($siteinfo->description) ? $siteinfo->description : ''}}">
     {{--网站描述，字数尽量空制在80个汉字，160个字符以内！--}}
 </head>
 <body ontouchstart>
@@ -50,9 +50,13 @@
     <header class="navbar-wrapper">
         <div class="navbar navbar-black navbar-fixed-top">
             <div class="container cl">
-                <a class="logo navbar-logo hidden-xs" href="/">{{ config('app.name', 'Laravel') }}</a>
-                <a class="logo navbar-logo-m visible-xs" href="/">{{ config('app.name', 'Laravel') }}</a>
-                <span class="logo navbar-slogan hidden-xs">方便 &middot; 贴心 &middot; 中国网站</span>
+                <a class="logo navbar-logo hidden-xs" href="/">{{!empty($siteinfo->title) ? $siteinfo->title : ''}}</a>
+                <a class="logo navbar-logo-m visible-xs" href="/">{{!empty($siteinfo->title) ? $siteinfo->title : ''}}</a>
+                <span class="logo navbar-slogan hidden-xs">
+                    {{!empty($siteinfo->keywords1) ? $siteinfo->keywords1 : ''}}
+                    {{!empty($siteinfo->keywords2) ? (!empty($siteinfo->keywords1) ? ' · ' : '') . $siteinfo->keywords2 : ''}}
+                    {{!empty($siteinfo->keywords3) ? ((!empty($siteinfo->keywords1) || !empty($siteinfo->keywords2)) ? ' · ' : '') . $siteinfo->keywords3 : ''}}
+                </span>
                 <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs JS-nav-toggle" href="javascript:;">&#xe667;</a>
                 <nav class="nav navbar-nav nav-collapse" role="navigation" id="Hui-navbar">
                     <ul class="cl">
@@ -110,16 +114,17 @@
         @yield('content')
         <footer class="footer mt-20">
             <div class="container">
-                <nav class="footer-nav">
-                    <a target="_blank" href="http://www.h-ui.net/aboutHui.shtml">关于H-ui</a>
-                    <span class="pipe">|</span>
-                    <a target="_blank" href="http://www.h-ui.net/copyright.shtml">软件著作权</a>
-                    <span class="pipe">|</span>
-                    <a target="_blank" href="http://www.h-ui.net/juanzeng.shtml">感谢捐赠</a>
-                </nav>
-                <p>Copyright &copy;2013-2017 H-ui.net All Rights Reserved. <br>
-                    <a rel="nofollow" target="_blank" href="http://www.miitbeian.gov.cn/">京ICP备15015336号-1</a>
+                {{--<nav class="footer-nav">--}}
+                    {{--<a target="_blank" href="http://www.h-ui.net/aboutHui.shtml">关于H-ui</a>--}}
+                    {{--<span class="pipe">|</span>--}}
+                    {{--<a target="_blank" href="http://www.h-ui.net/copyright.shtml">软件著作权</a>--}}
+                    {{--<span class="pipe">|</span>--}}
+                    {{--<a target="_blank" href="http://www.h-ui.net/juanzeng.shtml">感谢捐赠</a>--}}
+                {{--</nav>--}}
+                <p>
+                    Copyright {{!empty($siteinfo->copyright) ? $siteinfo->copyright : ''}}
                     <br>
+                    {{!empty($siteinfo->icp) ? '<a rel="nofollow" target="_blank" href="http://www.miitbeian.gov.cn/">'.$siteinfo->icp.'</a><br>' : ''}}
                     未经允许，禁止转载、抄袭、镜像<br>
                     用心做站，做不一样的站</p>
             </div>
