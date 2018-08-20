@@ -24,6 +24,8 @@ Route::get('/home', 'HomeController@product')->name('product');
 Route::get('checklogin','WelecomeController@checklogin')->name('checklogin');
 Route::any('geetestCheckOnly','WelecomeController@geetestCheckOnly')->name('geetestCheckOnly');
 
+Route::get('/ttt','WelecomeController@ttt')->name('ttt');
+
 //非法路劲跳转前台启动登录
 Route::get('/jump','WelecomeController@jump')->name('jump');
 

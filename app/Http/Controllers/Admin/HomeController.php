@@ -161,15 +161,15 @@ class HomeController extends Controller
         if (empty(Brand::all()->toArray())) {
             $res = [
                 [
-                    'name' => '易码平台',
-                    'desc' => '',
+                    'name' => '线路一',
+                    'desc' => '易码平台',
                     'sign' => 'yima',
                     'sort' => '101',
                 ],
                 [
-                    'name' => '麦子平台',
-                    'desc' => '',
-                    'sign' => 'maizi',
+                    'name' => '线路二',
+                    'desc' => 'thewolf平台',
+                    'sign' => 'thewolf',
                     'sort' => '102',
                 ],
             ];

@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms51ym
 {
-    private static $password = '198522';
-    private static $username = 'Fanleguan';
+    private static $password = '';
+    private static $username = '';
     private static $baseurl = 'http://api.fxhyd.cn/UserInterface.aspx';
     private static $token = '';                             //token
     protected static $client = '';                          //guzzle 初始化对象
@@ -26,7 +26,8 @@ class Sms51ym
 
     public function __construct()
     {
-
+        self::$username = env('APP_YIMANAME');
+        self::$password = env('APP_YIMAPWD');
         self::$client = new Client(['base_uri' => self::$baseurl]);
         # Redis使用方法
         //Redis::set('sms51ymtoken','111','EX',10);  //指定过期时间

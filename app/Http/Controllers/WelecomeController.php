@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Common\Common;
 use App\Libraries\GeeTestSdk\GeetestLib;
+use App\Libraries\SmsThewolf\SmsThewolf;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -63,11 +64,20 @@ class WelecomeController extends Controller
     }
 
 
+    /**
+     * 获取GeeTest 秘钥 输出组件
+     * @param Request $request
+     */
     public function geetestCheckOnly(Request $request)
     {
         $Gt = new GeetestLib(env('GEETEST_ID'),env('GEETEST_KEY'));
         $user_id = "test";
         $status = $Gt->pre_process($user_id);
         echo $Gt->get_response_str();
+    }
+
+    public function ttt(Request $request)
+    {
+        new SmsThewolf();
     }
 }

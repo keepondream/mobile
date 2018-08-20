@@ -21,3 +21,4 @@ class Site extends Model
     protected $fillable = ['title','keywords','description','icp','countscript','copyright','keywords1','keywords2','keywords3'];
 
 }
+
