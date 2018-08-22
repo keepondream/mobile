@@ -221,9 +221,12 @@
         //启动登录
         var jump = '{{!empty($jump) ? $jump : ''}}';
         if (jump) {
-            setTimeout(function () {
-                modaldemo(1);
-            },500);
+            var status = '{{\Illuminate\Support\Facades\Auth::id()}}';
+            if (!status) {
+                setTimeout(function () {
+                    modaldemo(1);
+                },500);
+            }
         }
 
         // 登录/注册
