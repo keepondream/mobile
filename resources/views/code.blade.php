@@ -434,7 +434,9 @@
                         var str = '<a href="javascript:;" class="btn btn-sm btn-danger" onclick="window.location.reload()">刷新页面</a>';
                         tr.append(str);
                         //立即执行
-                        mobile_get(data.data['order_id'],data.data['num']);
+                        setTimeout(function () {
+                            mobile_get(data.data['order_id'],data.data['num']);
+                        },3000);
                         //定时执行
                         mobiletimer = window.setInterval(function () {
                             mobile_get(data.data['order_id'],data.data['num']);
@@ -478,7 +480,7 @@
                         var tempContent = '';
                         var tempClass = '';
                         var tempBlock = '';
-                        if (res.length > 0) {
+                        if (res && res.length > 0) {
                             for (var i = 0; i < res.length; i++) {
                                 // if (res[i].isblock == 0) {
                                 //     tempBlock = '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-secondary radius" style="cursor:pointer;" onclick="mobileBlock(this,'+res[i].id+')">拉黑</span>';
@@ -535,6 +537,8 @@
 
     </script>
 @endsection
+
+
 
 
 
