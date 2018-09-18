@@ -213,13 +213,7 @@ class HomeController extends Controller
                         'repetition' => 0
                     ];
 //                    $model::getMobile($brandsign,Auth::user()->id,$order_id,$phonenum,$param);
-                    $redisArr = [
-                        md5('mobile') => Redis::Llen(md5('mobile')),
-                        md5('mobiletwo') => Redis::Llen(md5('mobiletwo')),
-                        md5('mobilethree') => Redis::Llen(md5('mobilethree')),
-                    ];
-                    asort($redisArr);
-                    Redis::Rpush(key($redisArr),json_encode($getMobile));
+                    Redis::Rpush(Common::getMobileRedisName(),json_encode($getMobile));
                 }
                 //组装 订单ID 并返回 在客户端 进行手机号数据调用
                 $outdata = [
@@ -317,6 +311,23 @@ class HomeController extends Controller
         }
 
         return response()->json($msg);
+    }
+
+    public function test()
+    {
+        $data = [
+            'user_id' => 555,
+            'order_id' => 555,
+            'brand_type' => 555,
+            'itemid' => 555,
+            'num' => 555,
+            'mobile' => 55555555,
+            'mobile_status' => '1',
+            'get_mobile_time' => time(),
+            'mobile_repetition' => 5
+        ];
+        var_dump(MobileLog::create($data)->id);
+        exit;
     }
 }
 

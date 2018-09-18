@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Common\Common;
 use App\http\Model\MobileLog;
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 
 class SmsBackCredit extends Command
 {
@@ -40,18 +42,34 @@ class SmsBackCredit extends Command
     public function handle()
     {
         try {
-            //查询短信获取失败
-            $data = MobileLog::where(['mobile_status'=>1,'is_sms'=>2,'is_credit_return'=>0])->orderBy('id','asc')->get();
-            if (count($data) > 0) {
-                foreach ($data as $datum) {
-                    $model = User::find($datum->user_id);
+            //获取需要反还积分的用户id
+
+            $res = Redis::lpop(Common::getBackCreditRedisName());
+            if (!empty($res)) {
+                $param = json_decode($res,true);
+                $model = User::find($param['user_id']);
+                if (!empty($model->id)) {
                     $model->credit = $model->credit + 10; //_____________-此处默认一条10分 后期更改------
+
                     if ($model->save()) {
-                        $datum->is_credit_return = 1;
-                        $datum->save();
+                        $mobileLogModel = MobileLog::find($param['id']);
+                        $mobileLogModel->is_credit_return = 1;
+                        $mobileLogModel->save();
                     }
                 }
             }
+//            //查询短信获取失败
+//            $data = MobileLog::where(['mobile_status'=>1,'is_sms'=>2,'is_credit_return'=>0])->orderBy('id','asc')->get();
+//            if (count($data) > 0) {
+//                foreach ($data as $datum) {
+//                    $model = User::find($datum->user_id);
+//                    $model->credit = $model->credit + 10; //_____________-此处默认一条10分 后期更改------
+//                    if ($model->save()) {
+//                        $datum->is_credit_return = 1;
+//                        $datum->save();
+//                    }
+//                }
+//            }
         } catch (\Exception $exception) {
             $this->error($exception->getMessage());
         }

@@ -148,18 +148,12 @@ class Sms51ym
                 'num' => $num,
                 'mobile_status' => '2',
                 'get_mobile_time' => time(),
+                'sms_content' => '手机号获取失败!不会消耗积分!',
                 'mobile_repetition' => $repetition
             ];
             MobileLog::create($data);
             return Common::jsonOutData(201,'手机号获取失败',$getMobile);
         }
-//
-//        //------调试----
-//        Redis::Rpush(md5('mobile'),json_encode($getMobile));
-//        return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
-//        //------结束----
-//
-
 
         $params = [
             'action' => 'getmobile',
@@ -189,7 +183,9 @@ class Sms51ym
                         'get_mobile_time' => time(),
                         'mobile_repetition' => $repetition
                     ];
-                    MobileLog::create($data);
+                    $data['id'] = MobileLog::create($data)->id;
+                    //将需要获取短信的手机号 择优存储redis队列 进行短信获取 此处改用队列目的减少 批量读库 造成CPU负载过高
+                    Redis::Rpush(Common::getSmsRedisName(),json_encode($data));
                     //成功获取扣除用户积分 -----------------以后规则待定----------暂时 一条扣10分
                     $userModel = User::find($memberid);
                     $userModel->credit = $userModel->credit - 10;
@@ -201,13 +197,7 @@ class Sms51ym
                 //失败则将继续获取 一直获取 重复次数达到 12 次 则确定获取失败
                 //将用户数据存入redis 定时执行
                 //做个Redis 队列 数据均衡 取出最小值进行丢入
-                $redisArr = [
-                    md5('mobile') => Redis::Llen(md5('mobile')),
-                    md5('mobiletwo') => Redis::Llen(md5('mobiletwo')),
-                    md5('mobilethree') => Redis::Llen(md5('mobilethree')),
-                ];
-                asort($redisArr);
-                Redis::Rpush(key($redisArr),json_encode($getMobile));
+                Redis::Rpush(Common::getMobileRedisName(),json_encode($getMobile));
                 return Common::jsonOutData(202,'获取手机号错误信息',$getMobile);
             }
         }
@@ -240,6 +230,8 @@ class Sms51ym
             $model->is_release = 1;
             $model->get_sms_time = time();
             $model->save();
+            //将id 丢入redis 队列 做积分反还操作
+            Redis::Rpush(Common::getBackCreditRedisName(),json_encode(['id'=>$model->id,'user_id'=>$model->user_id]));
         } else {
             //获取短信内容
             $response = self::$client->request('GET', self::$baseurl, [
@@ -256,8 +248,10 @@ class Sms51ym
                     $model->get_sms_time = time();
                     $model->save();
                     return Common::jsonOutData(200,'短信内容获取成功!');
-                }
-//                else {
+                } else {
+                    //获取失败则继续丢入redis队列获取,直到超过5分钟停止
+                    Redis::Rpush(Common::getSmsRedisName(),json_encode($data));
+
 //                    //失败将该手机号拉黑
 //                    $model->sms_content = '短信获取失败!';
 //                    $model->is_sms = 2;
@@ -265,8 +259,8 @@ class Sms51ym
 //                    $model->is_release = 1;
 //                    $model->get_sms_time = time();
 //                    $model->save();
-//                    return Common::jsonOutData(202,'获取短信内容失败!~'.$res);
-//                }
+                    return Common::jsonOutData(202,'短信获取失败,再次进入队列获取!~');
+                }
             }
         }
     }

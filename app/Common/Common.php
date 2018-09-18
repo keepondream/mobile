@@ -15,6 +15,7 @@ use App\http\Model\Menu;
 use App\http\Model\Region;
 use App\http\Model\RoleAccess;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class Common
 {
@@ -113,6 +114,45 @@ class Common
             return $status;
         }
         return $actionAuthArr;
+    }
+
+
+    /**
+     * 获取处理手机号 队列名称  (简单择优)
+     * @return mixed    队列名称
+     */
+    public static function getMobileRedisName()
+    {
+        $redisArr = [
+            md5('mobile') => Redis::Llen(md5('mobile')),
+            md5('mobiletwo') => Redis::Llen(md5('mobiletwo')),
+            md5('mobilethree') => Redis::Llen(md5('mobilethree')),
+        ];
+        asort($redisArr);
+        return key($redisArr);
+    }
+
+    /**
+     * 获取处理手机短信 队列名称 (简单择优)
+     * @return mixed    队列名称
+     */
+    public static function getSmsRedisName()
+    {
+        $redisArr = [
+            md5('smsone') => Redis::Llen(md5('smsone')),
+            md5('smstwo') => Redis::Llen(md5('smstwo')),
+            md5('smsthree') => Redis::Llen(md5('smsthree')),
+        ];
+        asort($redisArr);
+        return key($redisArr);
+    }
+
+    /**
+     * 反还积分队列名称
+     */
+    public static function getBackCreditRedisName()
+    {
+        return md5('backcredit');
     }
 
     /**

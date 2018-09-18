@@ -23,6 +23,8 @@ Route::post('/checkMember','WelecomeController@checkMember')->name('checkMember'
 Route::get('/home', 'HomeController@product')->name('product');
 Route::get('checklogin','WelecomeController@checklogin')->name('checklogin');
 Route::any('geetestCheckOnly','WelecomeController@geetestCheckOnly')->name('geetestCheckOnly');
+//测试用
+//Route::any('test','HomeController@test')->name('test');
 
 Route::get('/ttt','WelecomeController@ttt')->name('ttt');
 

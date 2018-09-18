@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\GetSmsOne;
+use App\Console\Commands\GetSmsThree;
+use App\Console\Commands\GetSmsTwo;
 use App\Console\Commands\Sms;
 use App\Console\Commands\SmsBackCredit;
 use App\Console\Commands\SmsMobile;
@@ -21,6 +24,9 @@ class Kernel extends ConsoleKernel
         SmsMobile::class,
         SmsBackCredit::class,
         SmsMobileBlock::class,
+        GetSmsOne::class,
+        GetSmsTwo::class,
+        GetSmsThree::class
     ];
 
     /**
@@ -61,8 +67,14 @@ class Kernel extends ConsoleKernel
             ->everyMinute()
             ->sendOutputTo('./crontabthree.log');
 
-        # 获取短信
-        $schedule->command('sms')
+        # 获取短信 最新改动 利用 redis 取代 sms 查库方式 2018-09-18 15:23:49
+        $schedule->command('smsone')
+            ->everyMinute()
+            ->sendOutputTo('./smscrontab.log');
+        $schedule->command('smstwo')
+            ->everyMinute()
+            ->sendOutputTo('./smscrontab.log');
+        $schedule->command('smsthree')
             ->everyMinute()
             ->sendOutputTo('./smscrontab.log');
 //            ->appendOutputTo('./smscrontab.log');
